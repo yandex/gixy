@@ -19,7 +19,7 @@ gixy
 
 # Usage
 By default Gixy will try to analyze Nginx configuration placed in `/etc/nginx/nginx.conf`. But you can always specify needed path:
-```bash
+```
 $ gixy /etc/nginx/nginx.conf
 
 ==================== Results ===================
@@ -62,7 +62,7 @@ Total issues:
     High: 0
 ```
 
-You can achieve all other `gixy` arguments with the help command: `gixy --help`
+Or something else, you can find all other `gixy` arguments with the help command: `gixy --help`
 
 # Documentation
 Full documentation and recommendations can be found [here](https://github.com/yandex/gixy/wiki/ru/) (sorry, but Russian language only so far)
