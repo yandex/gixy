@@ -1,5 +1,10 @@
 GIXY
 ====
+[![Mozilla Public License 2.0](https://img.shields.io/github/license/yandex/gixy.svg?style=flat-square)](https://github.com/yandex/gixy/blob/master/LICENSE)
+[![Build Status](https://img.shields.io/travis/yandex/gixy.svg?style=flat-square)](https://travis-ci.org/yandex/gixy)
+[![Your feedback is greatly appreciated](https://img.shields.io/maintenance/yandex/gixy.svg?style=flat-square)](https://github.com/yandex/gixy/issues/new)
+[![GitHub issues](https://img.shields.io/github/issues/yandex/gixy.svg?style=flat-square)]()
+[![GitHub pull requests](https://img.shields.io/github/issues-pr/yandex/gixy.svg?style=flat-square)]()
 
 # Overview
 Gixy is a tool for Nginx configuration analyzing. The main goal of Gixy is to prevent misconfiguration and automate flaw detection.
