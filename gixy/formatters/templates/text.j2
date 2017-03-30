@@ -1,0 +1,35 @@
+
+==================== Results ===================
+{% if not issues %}
+No issues found.
+{% else %}
+
+{% for issue in issues|sort(attribute='severity') %}
+Problem: [{{ issue.plugin }}] {{ issue.summary }}
+Severity: {{ issue.severity }}
+{% if issue.description %}
+Description: {{ issue.description }}
+{% endif %}
+{% if issue.help_url %}
+Additional info: {{ issue.help_url }}
+{% endif %}
+{% if issue.reason %}
+Reason: {{ issue.reason }}
+{% endif %}
+Pseudo config: {{ issue.config }}
+
+{% if not loop.last %}
+--------8<--------8<--------8<--------8<--------
+
+{% endif %}
+{% endfor %}
+{% endif %}
+
+{% if stats %}
+==================== Summary ===================
+Total issues:
+    Unspecified: {{ stats['UNSPECIFIED'] }}
+    Low: {{ stats['LOW'] }}
+    Medium: {{ stats['MEDIUM'] }}
+    High: {{ stats['HIGH'] }}
+{% endif %}
