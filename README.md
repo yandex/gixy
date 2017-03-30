@@ -9,6 +9,7 @@ GIXY
 # Overview
 Gixy is a tool for Nginx configuration analyzing. The main goal of Gixy is to prevent misconfiguration and automate flaw detection.
 Currently supported Python versions is 2.7 and 3.4+.
+
 Disclaimer: Gixy is well tested only on GNU/Linux, in other OS may have some issues.
 
 # Installation
