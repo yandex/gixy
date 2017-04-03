@@ -868,12 +868,20 @@ class GenerationContext(object):
 
 
 class Regexp(object):
-    def __init__(self, source, strict=False, case_sensitive=True, root=None, parsed=None):
+    def __init__(self, source, strict=False, case_sensitive=True, _root=None, _parsed=None):
+        """
+        Gixy Regexp class, parse and provide helpers to work with it.
+
+        :param str source: regexp, e.g. ^foo$.
+        :param bool strict: anchored or not.
+        :param bool case_sensitive: case sensitive or not.
+        """
+
         self.source = source
         self.strict = strict
         self.case_sensitive = case_sensitive
-        self._root = root
-        self._parsed = parsed
+        self._root = _root
+        self._parsed = _parsed
         self._groups = {}
 
     def can_startswith(self, char):
@@ -940,7 +948,7 @@ class Regexp(object):
           Regexp('[a-z][0-9]s').must_contain('s') -> True
 
         :param str char: character to test.
-        :return bool: True if regex can contain the specified char, False otherwise.
+        :return bool: True if regex MUST contain the specified char, False otherwise.
         """
 
         return self.root.must_contain(
@@ -994,7 +1002,7 @@ class Regexp(object):
         # for name, token in self._groups.items():
         #     result[name] = Regexp(str(self), root=token, strict=True, case_sensitive=self.case_sensitive)
         for name, parsed in extract_groups(self.parsed).items():
-            result[name] = Regexp('compiled', parsed=parsed, strict=True, case_sensitive=self.case_sensitive)
+            result[name] = Regexp('compiled', _parsed=parsed, strict=True, case_sensitive=self.case_sensitive)
         for name, group in self.parsed.pattern.groupdict.items():
             result[name] = result[group]
         return result
