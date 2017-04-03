@@ -11,6 +11,15 @@ EXTRACT_RE = re.compile(r'\$([1-9]|[a-z_][a-z0-9_]*|\{[a-z0-9_]+\})', re.IGNOREC
 
 
 def compile_script(script):
+    """
+    Compile Nginx script to list of variables.
+    Example:
+        compile_script('http://$foo:$bar') ->
+            [Variable('http://'), Variable($foo), Variable(':', Variable($bar).
+
+    :param str script: Nginx scrip.
+    :return Variable[]: list of variable.
+    """
     depends = []
     context = get_context()
     for i, var in enumerate(EXTRACT_RE.split(str(script))):
@@ -28,6 +37,16 @@ def compile_script(script):
 
 class Variable(object):
     def __init__(self, name, value=None, boundary=None, provider=None, have_script=True):
+        """
+        Gixy Nginx variable class - parse and provide helpers to work with it.
+
+        :param str|None name: variable name.
+        :param str|Regexp value: variable value..
+        :param Regexp boundary: variable boundary set.
+        :param Directive provider: directive that provide variable (e.g. if, location, rewrite, etc).
+        :param bool have_script: may variable have nginx script or not (mostly used to indicate a string literal).
+        """
+
         self.name = name
         self.value = value
         self.regexp = None
@@ -40,6 +59,13 @@ class Variable(object):
             self.depends = compile_script(value)
 
     def can_contain(self, char):
+        """
+        Checks if variable can contain the specified char.
+
+        :param str char: character to test.
+        :return: True if variable can contain the specified char, False otherwise.
+        """
+
         # First of all check boundary set
         if self.boundary and not self.boundary.can_contain(char):
             return False
@@ -56,6 +82,13 @@ class Variable(object):
         return False
 
     def can_startswith(self, char):
+        """
+        Checks if variable can starts with the specified char.
+
+        :param str char: character to test.
+        :return: True if variable can starts with the specified char, False otherwise.
+        """
+
         # First of all check boundary set
         if self.boundary and not self.boundary.can_startswith(char):
             return False
@@ -72,6 +105,13 @@ class Variable(object):
         return False
 
     def must_contain(self, char):
+        """
+        Checks if variable MUST contain the specified char.
+
+        :param str char: character to test.
+        :return: True if variable must contain the specified char, False otherwise.
+        """
+
         # First of all check boundary set
         if self.boundary and self.boundary.must_contain(char):
             return True
@@ -88,6 +128,13 @@ class Variable(object):
         return self.value and char in self.value
 
     def must_startswith(self, char):
+        """
+        Checks if variable MUST starts with the specified char.
+
+        :param str char: character to test.
+        :return: True if variable must starts with the specified char.
+        """
+
         # First of all check boundary set
         if self.boundary and self.boundary.must_startswith(char):
             return True
@@ -105,6 +152,11 @@ class Variable(object):
 
     @property
     def providers(self):
+        """
+        Returns list of variable provides.
+
+        :return Directive[]: providers.
+        """
         result = []
         if self.provider:
             result.append(self.provider)
