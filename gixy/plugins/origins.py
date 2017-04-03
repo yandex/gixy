@@ -32,7 +32,7 @@ class origins(Plugin):
             domains = '[^/.]*\.[^/]{2,7}'
 
         scheme = 'https{http}'.format(http=('?' if not self.config.get('https_only') else ''))
-        regex = r'^{scheme}://(?:[^/.]*\.){{0,10}}(?:{domains})(?::\d*)?(?:/|\?|$)'.format(
+        regex = r'^{scheme}://(?:[^/.]*\.){{0,10}}(?P<domain>{domains})(?::\d*)?(?:/|\?|$)'.format(
             scheme=scheme,
             domains=domains
         )
@@ -60,7 +60,8 @@ class origins(Plugin):
             elif not value.endswith('/'):
                 value += '.evil.com'
 
-            if not self.valid_re.match(value):
+            valid = self.valid_re.match(value)
+            if not valid or valid.group('domain') == 'evil.com':
                 invalid_referers.add(value)
 
         if invalid_referers:
