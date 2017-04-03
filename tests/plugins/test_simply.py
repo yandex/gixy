@@ -60,16 +60,27 @@ def test_from_config():
                     'Plugin "{}" should have at least one simple test config with false positive'.format(plugin))
 
 
-def yoda_provider(plugin):
+def parse_plugin_options(config_path):
+    with open(config_path, 'r') as f:
+        config_line = f.readline()
+        if config_line.startswith('# Options: '):
+            return json.loads(config_line[10:])
+    return None
+
+
+def yoda_provider(plugin, plugin_options=None):
     config = Config(
         allow_includes=False,
         plugins=[plugin]
     )
+    if plugin_options:
+        config.set_for(plugin, plugin_options)
     return Gixy(config=config)
 
 
 def check_configuration(plugin, config_path, test_config):
-    with yoda_provider(plugin) as yoda:
+    plugin_options = parse_plugin_options(config_path)
+    with yoda_provider(plugin, plugin_options) as yoda:
         yoda.audit(config_path)
         results = RawFormatter().format(yoda)
 
