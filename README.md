@@ -57,7 +57,7 @@ Total issues:
 
 Or skip some tests:
 ```
-$ ./gixy-cli.py --skips http_splitting /etc/nginx/nginx.conf
+$ gixy --skips http_splitting /etc/nginx/nginx.conf
 
 ==================== Results ===================
 No issues found.
