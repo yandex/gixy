@@ -73,7 +73,7 @@ Total issues:
 Or something else, you can find all other `gixy` arguments with the help command: `gixy --help`
 
 # Documentation
-Full documentation and recommendations can be found [here](https://github.com/yandex/gixy/wiki/ru/) (sorry, but Russian language only so far)
+Full documentation and recommendations can be found [here](https://github.com/yandex/gixy/wiki/) (sorry, but Russian language only so far)
 
 # Contributing
 Contributions to Gixy are always welcome! You can help us in different ways:
