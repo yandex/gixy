@@ -14,7 +14,7 @@ add_header Content-Security-Policy "
     severity = gixy.severity.LOW
     description = ('Multi-line headers are deprecated (see RFC 7230). '
                    'Some clients never supports them (e.g. IE/Edge).')
-    help_url = 'https://github.com/yandex/gixy/wiki/ru/addheadermultiline'
+    help_url = 'https://github.com/yandex/gixy/docs/ru/plugins/addheadermultiline.md'
     directives = ['add_header', 'more_set_headers']
 
     def audit(self, directive):
