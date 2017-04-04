@@ -20,7 +20,7 @@ class http_splitting(Plugin):
     summary = 'Possible HTTP-Splitting vulnerability.'
     severity = gixy.severity.HIGH
     description = 'Using variables that can contain "\\n" may lead to http injection.'
-    help_url = 'https://github.com/yandex/gixy/docs/ru/plugins/httpsplitting.md'
+    help_url = 'https://github.com/yandex/gixy/blob/master/docs/ru/plugins/httpsplitting.md'
     directives = ['rewrite', 'return', 'add_header', 'proxy_set_header', 'proxy_pass']
 
     def audit(self, directive):

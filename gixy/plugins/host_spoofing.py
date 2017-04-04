@@ -10,7 +10,7 @@ class host_spoofing(Plugin):
     summary = 'The proxied Host header may be spoofed.'
     severity = gixy.severity.MEDIUM
     description = 'In most cases "$host" variable are more appropriate, just use it.'
-    help_url = 'https://github.com/yandex/gixy/docs/ru/plugins/hostspoofing.md'
+    help_url = 'https://github.com/yandex/gixy/blob/master/docs/ru/plugins/hostspoofing.md'
     directives = ['proxy_set_header']
 
     def audit(self, directive):

@@ -17,7 +17,7 @@ class origins(Plugin):
     summary = 'Validation regex for "origin" or "referrer" matches untrusted domain.'
     severity = gixy.severity.MEDIUM
     description = 'Improve the regular expression to match only trusted referrers.'
-    help_url = 'https://github.com/yandex/gixy/docs/ru/plugins/origins.md'
+    help_url = 'https://github.com/yandex/gixy/blob/master/docs/ru/plugins/origins.md'
     directives = ['if']
     options = {
         'domains': ['*'],

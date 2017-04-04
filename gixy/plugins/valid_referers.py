@@ -10,7 +10,7 @@ class valid_referers(Plugin):
     summary = 'Used "none" as valid referer.'
     severity = gixy.severity.HIGH
     description = 'Never trust undefined referer.'
-    help_url = 'https://github.com/yandex/gixy/docs/ru/plugins/validreferers.md'
+    help_url = 'https://github.com/yandex/gixy/blob/master/docs/ru/plugins/validreferers.md'
     directives = ['valid_referers']
 
     def audit(self, directive):

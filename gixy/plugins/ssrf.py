@@ -24,7 +24,7 @@ class ssrf(Plugin):
     summary = 'Possible SSRF (Server Side Request Forgery) vulnerability.'
     severity = gixy.severity.HIGH
     description = 'The configuration may allow attacker to create a arbitrary requests from the vulnerable server.'
-    help_url = 'https://github.com/yandex/gixy/docs/ru/plugins/ssrf.md'
+    help_url = 'https://github.com/yandex/gixy/blob/master/docs/ru/plugins/ssrf.md'
     directives = ['proxy_pass']
 
     def __init__(self, config):

@@ -1,13 +1,14 @@
 Gixy — это утилита для анализа конфигурации Nginx. Большей частью служит для обнаружения проблем безопасности, но может искать и иные ошибки.
 
-Перечень проблем, которые Gixy способна обнаружить:
-  * [[ssrf] Server Side Request Forgery](https://github.com/yandex/gixy/docs/ru/plugins/ssrf.md)
-  * [[http_splitting] HTTP Splitting](https://github.com/yandex/gixy/docs/ru/plugins/httpsplitting.md)
-  * [[origins] Проблемы валидации referrer/origin](https://github.com/yandex/gixy/docs/ru/plugins/origins.md)
-  * [[add_header_redefinition] Переопределение "вышестоящих" заголовков ответа директивой "add_header"](https://github.com/yandex/gixy/docs/ru/plugins/addheaderredefinition.md)
-  * [[host_spoofing] Подделка заголовка запроса Host](https://github.com/yandex/gixy/docs/ru/plugins/hostspoofing.md)
-  * [[valid_referers] none in valid_referers](https://github.com/yandex/gixy/docs/ru/plugins/validreferers.md)
-  * [[add_header_multiline] Многострочные заголовоки ответа](https://github.com/yandex/gixy/docs/ru/plugins/addheadermultiline.md)
+## Что умеет
+На текущий момент Gixy способна обнаружить:
+  * [[ssrf] Server Side Request Forgery](https://github.com/yandex/gixy/blob/master/docs/ru/plugins/ssrf.md)
+  * [[http_splitting] HTTP Splitting](https://github.com/yandex/gixy/blob/master/docs/ru/plugins/httpsplitting.md)
+  * [[origins] Проблемы валидации referrer/origin](https://github.com/yandex/gixy/blob/master/docs/ru/plugins/origins.md)
+  * [[add_header_redefinition] Переопределение "вышестоящих" заголовков ответа директивой "add_header"](https://github.com/yandex/gixy/blob/master/docs/ru/plugins/addheaderredefinition.md)
+  * [[host_spoofing] Подделка заголовка запроса Host](https://github.com/yandex/gixy/blob/master/docs/ru/plugins/hostspoofing.md)
+  * [[valid_referers] none in valid_referers](https://github.com/yandex/gixy/blob/master/docs/ru/plugins/validreferers.md)
+  * [[add_header_multiline] Многострочные заголовоки ответа](https://github.com/yandex/gixy/blob/master/docs/ru/plugins/addheadermultiline.md)
 
 Проблемы, которым Gixy только учится можно найти в [Issues с меткой "new plugin"](https://github.com/yandex/gixy/issues?q=is%3Aissue+is%3Aopen+label%3A%22new+plugin%22)
 

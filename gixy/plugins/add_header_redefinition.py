@@ -16,7 +16,7 @@ class add_header_redefinition(Plugin):
     severity = gixy.severity.MEDIUM
     description = ('"add_header" replaces ALL parent headers. '
                    'See documentation: http://nginx.org/en/docs/http/ngx_http_headers_module.html#add_header')
-    help_url = 'https://github.com/yandex/gixy/docs/ru/plugins/addheaderredefinition.md'
+    help_url = 'https://github.com/yandex/gixy/blob/master/docs/ru/plugins/addheaderredefinition.md'
     directives = ['server', 'location', 'if']
     options = {'headers': {'x-frame-options',
                            'x-content-type-options',
