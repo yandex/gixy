@@ -15,7 +15,7 @@ Disclaimer: Gixy is well tested only on GNU/Linux, in other OS may have some iss
 # Installation
 Gixy is distributed on PyPI. The best way to install it is with pip:
 ```bash
-pip install bandit
+pip install gixy
 ```
 
 Run Gixy and check results:
