@@ -34,7 +34,7 @@ $ gixy /etc/nginx/nginx.conf
 
 Problem: [http_splitting] Possible HTTP-Splitting vulnerability.
 Description: Using variables that can contain "\n" may lead to http injection.
-Additional info: https://github.com/yandex/gixy/wiki/ru/httpsplitting
+Additional info: https://github.com/yandex/gixy/blob/master/docs/ru/plugins/httpsplitting.md
 Reason: At least variable "$action" can contain "\n"
 Pseudo config:
 include /etc/nginx/sites/default.conf;
