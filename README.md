@@ -15,7 +15,7 @@ Disclaimer: Gixy is well tested only on GNU/Linux, in other OS may have some iss
 # Installation
 Gixy is distributed on PyPI. The best way to install it is with pip:
 ```bash
-pip install bandit
+pip install gixy
 ```
 
 Run Gixy and check results:
@@ -24,7 +24,9 @@ gixy
 ```
 
 # Usage
-By default Gixy will try to analyze Nginx configuration placed in `/etc/nginx/nginx.conf`. But you can always specify needed path:
+By default Gixy will try to analyze Nginx configuration placed in `/etc/nginx/nginx.conf`.
+
+But you always can specify needed path:
 ```
 $ gixy /etc/nginx/nginx.conf
 
@@ -55,7 +57,7 @@ Total issues:
 
 Or skip some tests:
 ```
-$ ./gixy-cli.py --skips http_splitting /etc/nginx/nginx.conf
+$ gixy --skips http_splitting /etc/nginx/nginx.conf
 
 ==================== Results ===================
 No issues found.
@@ -72,7 +74,6 @@ Or something else, you can find all other `gixy` arguments with the help command
 
 # Documentation
 Full documentation and recommendations can be found [here](https://github.com/yandex/gixy/docs/ru/README.md) (sorry, but Russian language only so far)
-
 
 # Contributing
 Contributions to Gixy are always welcome! You can help us in different ways:
