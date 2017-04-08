@@ -1,8 +1,7 @@
 GIXY
 ====
 [![Mozilla Public License 2.0](https://img.shields.io/github/license/yandex/gixy.svg?style=flat-square)](https://github.com/yandex/gixy/blob/master/LICENSE)
-[![Build Status](https://img.shields.io/travis/yandex/gixy.svg?style=flat-square)](https://travis-ci.org/yandex/gixy)
-[![Your feedback is greatly appreciated](https://img.shields.io/maintenance/yandex/gixy.svg?style=flat-square)](https://github.com/yandex/gixy/issues/new)
+[![Your feedback is greatly appreciated](https://img.shields.io/maintenance/yes/2017.svg?style=flat-square)](https://github.com/yandex/gixy/issues/new)
 [![GitHub issues](https://img.shields.io/github/issues/yandex/gixy.svg?style=flat-square)]()
 [![GitHub pull requests](https://img.shields.io/github/issues-pr/yandex/gixy.svg?style=flat-square)]()
 
@@ -13,7 +12,7 @@ Currently supported Python versions is 2.7 and 3.4+.
 Disclaimer: Gixy is well tested only on GNU/Linux, in other OS may have some issues.
 
 # Installation
-Gixy is distributed on PyPI. The best way to install it is with pip:
+Gixy is distributed on [PyPI](https://pypi.python.org/pypi/gixy). The best way to install it is with pip:
 ```bash
 pip install gixy
 ```
