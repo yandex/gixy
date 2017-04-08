@@ -1,0 +1,14 @@
+language: python
+sudo: false
+python:
+  - "2.7"
+  - "3.5"
+  - "3.6"
+
+install:
+  - pip install -r requirements.pip
+  - pip install -r requirements.dev.pip
+
+script:
+  - nosetests --with-coverage --cover-package gixy -v
+  - flake8 --max-line-length=120 setup.py yodax
