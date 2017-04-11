@@ -1,6 +1,7 @@
 GIXY
 ====
 [![Mozilla Public License 2.0](https://img.shields.io/github/license/yandex/gixy.svg?style=flat-square)](https://github.com/yandex/gixy/blob/master/LICENSE)
+[![Travis](https://img.shields.io/travis/yandex/gixy.svg?style=flat-square)]()
 [![Your feedback is greatly appreciated](https://img.shields.io/maintenance/yes/2017.svg?style=flat-square)](https://github.com/yandex/gixy/issues/new)
 [![GitHub issues](https://img.shields.io/github/issues/yandex/gixy.svg?style=flat-square)]()
 [![GitHub pull requests](https://img.shields.io/github/issues-pr/yandex/gixy.svg?style=flat-square)]()
