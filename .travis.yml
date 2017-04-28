@@ -6,8 +6,8 @@ python:
   - "3.6"
 
 install:
-  - pip install -r requirements.pip
-  - pip install -r requirements.dev.pip
+  - pip install -r requirements.txt
+  - pip install -r requirements.dev.txt
 
 script:
   - nosetests --with-coverage --cover-package gixy -v
