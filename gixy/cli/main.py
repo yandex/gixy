@@ -92,11 +92,6 @@ def _get_cli_parser():
     return parser
 
 
-def _is_nginx_file(file_path):
-    s = open(file_path).read()
-    return 'server {' in s or 'http {' in s
-
-
 def main():
     parser = _get_cli_parser()
     args = parser.parse_args()
@@ -106,10 +101,6 @@ def main():
     if not os.path.isfile(path):
         sys.stderr.write('Please specify path to Nginx configuration.\n\n')
         parser.print_help()
-        sys.exit(1)
-
-    if not _is_nginx_file(path):
-        sys.stderr.write('This is nginx config? Rly?\n')
         sys.exit(1)
 
     try:

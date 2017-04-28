@@ -28,8 +28,14 @@ class NginxParser(object):
 
         if not root:
             root = block.Root()
-        parser = raw_parser.RawParser()
-        parsed = parser.parse(file_path)
+
+        try:
+            parser = raw_parser.RawParser()
+            parsed = parser.parse(file_path)
+        except ParseException as e:
+            LOG.error('Failed to parse config "{file}": {error}'.format(file=file_path, error=str(e)))
+            return root
+
         if len(parsed) and parsed[0].getName() == 'file_delimiter':
             #  Were parse nginx dump
             LOG.info('Switched to parse nginx configuration dump.')
@@ -104,10 +110,7 @@ class NginxParser(object):
         for file_path in glob.iglob(path):
             include = block.IncludeBlock('include', [file_path])
             parent.append(include)
-            try:
-                self.parse(file_path, include)
-            except ParseException as e:
-                LOG.error('Failed to parse include "{file}": {error}'.format(file=file_path, error=str(e)))
+            self.parse(file_path, include)
 
         if not file_path:
             LOG.warning("File not found: {}".format(path))
@@ -120,10 +123,7 @@ class NginxParser(object):
                 founded = True
                 include = block.IncludeBlock('include', [file_path])
                 parent.append(include)
-                try:
-                    self.parse_block(parsed, include)
-                except ParseException as e:
-                    LOG.error('Failed to parse include "{file}": {error}'.format(file=file_path, error=str(e)))
+                self.parse_block(parsed, include)
 
         if not founded:
             LOG.warning("File not found: {}".format(path))
