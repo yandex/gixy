@@ -9,12 +9,12 @@ GIXY
 # Overview
 <img align="right" width="192" height="192" src="/docs/logo.png">
 
-Gixy is a tool for Nginx configuration analyzing.
+Gixy is a tool to analyze Nginx configuration.
 The main goal of Gixy is to prevent misconfiguration and automate flaw detection.
 
-Currently supported Python versions is 2.7 and 3.5+.
+Currently supported Python versions are 2.7 and 3.5+.
 
-Disclaimer: Gixy is well tested only on GNU/Linux, in other OS may have some issues.
+Disclaimer: Gixy is well tested only on GNU/Linux, other OSs may have some issues.
 
 # Installation
 Gixy is distributed on [PyPI](https://pypi.python.org/pypi/gixy). The best way to install it is with pip:
@@ -30,7 +30,7 @@ gixy
 # Usage
 By default Gixy will try to analyze Nginx configuration placed in `/etc/nginx/nginx.conf`.
 
-But you always can specify needed path:
+But you can always specify needed path:
 ```
 $ gixy /etc/nginx/nginx.conf
 
@@ -87,4 +87,4 @@ Contributions to Gixy are always welcome! You can help us in different ways:
 
 Code guidelines:
   * Python code style should follow [pep8](https://www.python.org/dev/peps/pep-0008/) standards whenever possible;
-  * Pull requests with new plugins must contain unit tests for it.
+  * Pull requests with new plugins must have unit tests for it.
