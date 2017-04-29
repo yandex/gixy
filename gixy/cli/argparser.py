@@ -5,7 +5,6 @@ from six.moves import StringIO
 
 from gixy.core.plugins_manager import PluginsManager
 
-
 # used while parsing args to keep track of where they came from
 _COMMAND_LINE_SOURCE_KEY = 'command_line'
 _ENV_VAR_SOURCE_KEY = 'environment_variables'
@@ -32,8 +31,8 @@ class GixyConfigParser(DefaultConfigFileParser):
 
             white_space = '\\s*'
             key = '(?P<key>[^:=;#\s]+?)'
-            value = white_space+'[:=\s]'+white_space+'(?P<value>.+?)'
-            comment = white_space+'(?P<comment>\\s[;#].*)?'
+            value = white_space + '[:=\s]' + white_space + '(?P<value>.+?)'
+            comment = white_space + '(?P<comment>\\s[;#].*)?'
 
             key_only_match = re.match('^' + key + comment + '$', line)
             if key_only_match:
@@ -41,7 +40,7 @@ class GixyConfigParser(DefaultConfigFileParser):
                 items[key] = 'true'
                 continue
 
-            key_value_match = re.match('^'+key+value+comment+'$', line)
+            key_value_match = re.match('^' + key + value + comment + '$', line)
             if key_value_match:
                 key = key_value_match.group('key')
                 value = key_value_match.group('value')
@@ -54,7 +53,7 @@ class GixyConfigParser(DefaultConfigFileParser):
                 continue
 
             raise ConfigFileParserException('Unexpected line %s in %s: %s' % (i,
-                getattr(stream, 'name', 'stream'), line))
+                                                                              getattr(stream, 'name', 'stream'), line))
         return items
 
     def serialize(self, items):
@@ -95,7 +94,7 @@ class ArgsParser(ArgumentParser):
         for arg in action.option_strings:
             if arg in {'--config', '--write-config', '--version'}:
                 continue
-            if any([arg.startswith(2*c) for c in self.prefix_chars]):
+            if any([arg.startswith(2 * c) for c in self.prefix_chars]):
                 keys += [arg[2:], arg]  # eg. for '--bla' return ['bla', '--bla']
 
         return keys
@@ -119,8 +118,8 @@ class ArgsParser(ArgumentParser):
                 for action in self._actions:
                     config_file_keys = self.get_possible_config_keys(action)
                     if config_file_keys and not action.is_positional_arg and \
-                        already_on_command_line(existing_command_line_args,
-                                                action.option_strings):
+                            already_on_command_line(existing_command_line_args,
+                                                    action.option_strings):
                         value = getattr(parsed_namespace, action.dest, None)
                         if value is not None:
                             if type(value) is bool:

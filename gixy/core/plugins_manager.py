@@ -5,7 +5,6 @@ from gixy.plugins.plugin import Plugin
 
 
 class PluginsManager(object):
-
     def __init__(self, config=None):
         self.imported = False
         self.config = config
@@ -19,7 +18,7 @@ class PluginsManager(object):
         for plugin_file in files_list:
             if not plugin_file.endswith('.py') or plugin_file.startswith('_'):
                 continue
-            __import__('gixy.plugins.'+os.path.splitext(plugin_file)[0], None, None, [''])
+            __import__('gixy.plugins.' + os.path.splitext(plugin_file)[0], None, None, [''])
 
         self.imported = True
 

@@ -1,7 +1,6 @@
 import os
 from gixy.directives.directive import Directive
 
-
 DIRECTIVES = {}
 
 

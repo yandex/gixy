@@ -4,7 +4,6 @@ import logging
 from gixy.core.regexp import Regexp
 from gixy.core.context import get_context
 
-
 LOG = logging.getLogger(__name__)
 # See ngx_http_script_compile in http/ngx_http_script.c
 EXTRACT_RE = re.compile(r'\$([1-9]|[a-z_][a-z0-9_]*|\{[a-z0-9_]+\})', re.IGNORECASE)

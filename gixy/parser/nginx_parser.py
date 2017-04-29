@@ -1,4 +1,3 @@
-"""NginxParser is a member object of the NginxConfigurator class."""
 import os
 import glob
 import logging
@@ -13,7 +12,6 @@ LOG = logging.getLogger(__name__)
 
 
 class NginxParser(object):
-
     def __init__(self, file_path, allow_includes=True):
         self.base_file_path = file_path
         self.cwd = os.path.dirname(file_path)

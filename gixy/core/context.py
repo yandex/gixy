@@ -3,7 +3,6 @@ import copy
 
 from gixy.core.utils import is_indexed_name
 
-
 LOG = logging.getLogger(__name__)
 
 CONTEXTS = []

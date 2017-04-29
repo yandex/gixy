@@ -1,5 +1,4 @@
 class Issue(object):
-
     def __init__(self, plugin, summary=None, description=None,
                  severity=None, reason=None, help_url=None, directives=None):
         self.plugin = plugin

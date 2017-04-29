@@ -1,4 +1,3 @@
-"""Very low-level nginx config parser based on pyparsing."""
 import re
 import logging
 from cached_property import cached_property
@@ -6,7 +5,6 @@ from cached_property import cached_property
 from pyparsing import (
     Literal, Suppress, White, Word, alphanums, Forward, Group, Optional, Combine,
     Keyword, OneOrMore, ZeroOrMore, Regex, QuotedString, nestedExpr)
-
 
 LOG = logging.getLogger(__name__)
 

@@ -9,7 +9,6 @@ class Config(object):
                  output_format=None,
                  output_file=None,
                  allow_includes=True):
-
         self.severity = severity
         self.output_format = output_format
         self.output_file = output_file

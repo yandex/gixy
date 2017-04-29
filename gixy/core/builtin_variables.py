@@ -1,7 +1,6 @@
 from gixy.core.regexp import Regexp
 from gixy.core.variable import Variable
 
-
 BUILTIN_VARIABLES = {
     # http://nginx.org/en/docs/http/ngx_http_core_module.html#var_uri
     'uri': '/[^\x20\t]*',
