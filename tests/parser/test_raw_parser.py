@@ -463,6 +463,35 @@ server {
 
     assert_config(config, expected)
 
+
+def test_comments():
+    config = '''
+# Some comment
+add_header X-Some-Comment some;
+
+# 
+# Comment with padding
+# 
+add_header X-Padding-Comment padding;
+
+#
+add_header X-Blank-Comment blank;
+        '''
+
+    expected = [
+        ['Some comment'],
+        ['add_header', 'X-Some-Comment', 'some'],
+        [''],
+        ['Comment with padding'],
+        [''],
+        ['add_header', 'X-Padding-Comment', 'padding'],
+        [''],
+        ['add_header', 'X-Blank-Comment', 'blank'],
+    ]
+
+    assert_config(config, expected)
+
+
 def assert_config(config, expected):
     with mock.patch('%s.open' % builtins.__name__) as mock_open:
         mock_open.return_value = StringIO(config)
