@@ -70,6 +70,20 @@ class SetDirective(Directive):
         return [Variable(name=self.variable, value=self.value, provider=self)]
 
 
+class AuthRequestSetDirective(Directive):
+    nginx_name = 'auth_request_set'
+    provide_variables = True
+
+    def __init__(self, name, args):
+        super(AuthRequestSetDirective, self).__init__(name, args)
+        self.variable = args[0].strip('$')
+        self.value = args[1]
+
+    @property
+    def variables(self):
+        return [Variable(name=self.variable, value=self.value, provider=self)]
+
+
 class SetByLuaDirective(Directive):
     nginx_name = 'set_by_lua'
     provide_variables = True
