@@ -87,9 +87,8 @@ class RawParser(object):
         )("file_delimiter")
 
         comment = (
-            Suppress('#') +
-            Regex(r".*")
-        )("comment")
+            Regex(r"#.*")
+        )("comment").setParseAction(_fix_comment)
 
         hash_value = Group(
             value +
@@ -160,3 +159,17 @@ class RawParser(object):
         )("unparsed_block")
 
         return sub_block
+
+
+def _fix_comment(string, location, tokens):
+    """
+    Returns "cleared" comment text
+
+    :param string: original parse string
+    :param location: location in the string where matching started
+    :param tokens: list of the matched tokens, packaged as a ParseResults_ object
+    :return: list of the cleared comment tokens
+    """
+
+    comment = tokens[0][1:].strip()
+    return [comment]
