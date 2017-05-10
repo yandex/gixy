@@ -6,6 +6,7 @@ GIXY
 [![GitHub issues](https://img.shields.io/github/issues/yandex/gixy.svg?style=flat-square)](https://github.com/yandex/gixy/issues)
 [![GitHub pull requests](https://img.shields.io/github/issues-pr/yandex/gixy.svg?style=flat-square)](https://github.com/yandex/gixy/pulls)
 
+# Overview
 <img align="right" width="192" height="192" src="/docs/logo.png">
 
 Gixy — это утилита для анализа конфигурации Nginx.
@@ -13,6 +14,7 @@ Gixy — это утилита для анализа конфигурации Ng
 
 Официально поддерживаются версии Python 2.7, 3.5 и 3.6
 
+&nbsp;
 ## Что умеет
 На текущий момент Gixy способна обнаружить:
   * [[ssrf] Server Side Request Forgery](https://github.com/yandex/gixy/blob/master/docs/ru/plugins/ssrf.md)
