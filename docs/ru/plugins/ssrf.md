@@ -32,7 +32,7 @@ location ~* ^/internal-proxy/(?<proxy_proto>https?)/(?<proxy_host>.*?)/(?<proxy_
 ```
 
 Согласно документации Nginx внутренними запросами являются:
->  - запросы, перенаправленные директивами **error_page**, **index**, **random_index** и **try_files**;
+>  - запросы, перенаправленные директивами **error_page**, index, random_index и **try_files**;
 >  - запросы, перенаправленные с помощью поля “X-Accel-Redirect” заголовка ответа вышестоящего сервера;
 >  - подзапросы, формируемые командой “include virtual” модуля ngx_http_ssi_module и директивами модуля ngx_http_addition_module;
 >  - запросы, изменённые директивой **rewrite**.]>

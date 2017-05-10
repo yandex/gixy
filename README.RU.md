@@ -1,4 +1,17 @@
-Gixy — это утилита для анализа конфигурации Nginx. Большей частью служит для обнаружения проблем безопасности, но может искать и иные ошибки.
+GIXY
+====
+[![Mozilla Public License 2.0](https://img.shields.io/github/license/yandex/gixy.svg?style=flat-square)](https://github.com/yandex/gixy/blob/master/LICENSE)
+[![Build Status](https://img.shields.io/travis/yandex/gixy.svg?style=flat-square)](https://travis-ci.org/yandex/gixy)
+[![Your feedback is greatly appreciated](https://img.shields.io/maintenance/yes/2017.svg?style=flat-square)](https://github.com/yandex/gixy/issues/new)
+[![GitHub issues](https://img.shields.io/github/issues/yandex/gixy.svg?style=flat-square)](https://github.com/yandex/gixy/issues)
+[![GitHub pull requests](https://img.shields.io/github/issues-pr/yandex/gixy.svg?style=flat-square)](https://github.com/yandex/gixy/pulls)
+
+<img align="right" width="192" height="192" src="/docs/logo.png">
+
+Gixy — это утилита для анализа конфигурации Nginx.
+Большей частью служит для обнаружения проблем безопасности, но может искать и иные ошибки.
+
+Официально поддерживаются версии Python 2.7, 3.5 и 3.6
 
 ## Что умеет
 На текущий момент Gixy способна обнаружить:
@@ -12,12 +25,11 @@ Gixy — это утилита для анализа конфигурации Ng
 
 Проблемы, которым Gixy только учится можно найти в [Issues с меткой "new plugin"](https://github.com/yandex/gixy/issues?q=is%3Aissue+is%3Aopen+label%3A%22new+plugin%22)
 
-## Установка
-Наиболее простой способ установки Gixy - воспользоваться pip для установки из Pypi:
+# Установка
+Наиболее простой способ установки Gixy - воспользоваться pip для установки из [PyPI](https://pypi.python.org/pypi/gixy):
 ```bash
 pip install gixy
 ```
-Официально поддерживаются версии Python 2.7, 3.5 и 3.6
 
 ## Использование
 После установки должна стать доступна консольная утилита `gixy`.
@@ -107,3 +119,12 @@ available plugins:
 	ssrf
 ```
 
+# Contributing
+Contributions to Gixy are always welcome! You can help us in different ways:
+  * Open an issue with suggestions for improvements and errors you're facing;
+  * Fork this repository and submit a pull request;
+  * Improve the documentation.
+
+Code guidelines:
+  * Python code style should follow [pep8](https://www.python.org/dev/peps/pep-0008/) standards whenever possible;
+  * Pull requests with new plugins must have unit tests for it.

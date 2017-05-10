@@ -1,13 +1,13 @@
 # [add_header_multiline] Multiline response headers
 
 You should avoid using multiline response headers, because:
-  * they sre considered depricated (см. [RFC 7230](https://tools.ietf.org/html/rfc7230#section-3.2.4));
-  * Some HTTP-clients and web browser never supported them (e.g. IE/Edge/Nginx).
+  * they are depricated (see [RFC 7230](https://tools.ietf.org/html/rfc7230#section-3.2.4));
+  * some HTTP-clients and web browser never supported them (e.g. IE/Edge/Nginx).
 
 ## How can I find it?
 Misconfiguration example:
 ```nginx
-# http://nginx.org/ru/docs/http/ngx_http_headers_module.html#add_header
+# http://nginx.org/en/docs/http/ngx_http_headers_module.html#add_header
 add_header Content-Security-Policy "
     default-src: 'none';
     script-src data: https://yastatic.net;

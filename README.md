@@ -10,11 +10,23 @@ GIXY
 <img align="right" width="192" height="192" src="/docs/logo.png">
 
 Gixy is a tool to analyze Nginx configuration.
-The main goal of Gixy is to prevent misconfiguration and automate flaw detection.
+The main goal of Gixy is to prevent security misconfiguration and automate flaw detection.
 
 Currently supported Python versions are 2.7 and 3.5+.
 
 Disclaimer: Gixy is well tested only on GNU/Linux, other OSs may have some issues.
+
+## What it can do
+Right now Gixy can find:
+  * [[ssrf] Server Side Request Forgery](https://github.com/yandex/gixy/blob/master/docs/en/plugins/ssrf.md)
+  * [[http_splitting] HTTP Splitting](https://github.com/yandex/gixy/blob/master/docs/en/plugins/httpsplitting.md)
+  * [[origins] Problems with referrer/origin validation](https://github.com/yandex/gixy/blob/master/docs/en/plugins/origins.md)
+  * [[add_header_redefinition] Redefining of upstream response headers with directive "add_header"](https://github.com/yandex/gixy/blob/master/docs/en/plugins/addheaderredefinition.md)
+  * [[host_spoofing] Request's Host header forgery](https://github.com/yandex/gixy/blob/master/docs/en/plugins/hostspoofing.md)
+  * [[valid_referers] none in valid_referers](https://github.com/yandex/gixy/blob/master/docs/en/plugins/validreferers.md)
+  * [[add_header_multiline] Multiline response headers](https://github.com/yandex/gixy/blob/master/docs/en/plugins/addheadermultiline.md)
+
+You can find things that Gixy is learning to detect at [Issues labeled with "new plugin"](https://github.com/yandex/gixy/issues?q=is%3Aissue+is%3Aopen+label%3A%22new+plugin%22)
 
 # Installation
 Gixy is distributed on [PyPI](https://pypi.python.org/pypi/gixy). The best way to install it is with pip:
@@ -75,9 +87,6 @@ Total issues:
 ```
 
 Or something else, you can find all other `gixy` arguments with the help command: `gixy --help`
-
-# Documentation
-Full documentation and recommendations can be found [here](https://github.com/yandex/gixy/blob/master/docs/ru/README.md) (sorry, but Russian language only so far)
 
 # Contributing
 Contributions to Gixy are always welcome! You can help us in different ways:
