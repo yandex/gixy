@@ -15,7 +15,7 @@ Gixy — это утилита для анализа конфигурации Ng
 Официально поддерживаются версии Python 2.7, 3.5 и 3.6
 
 &nbsp;
-## Что умеет
+# Что умеет
 На текущий момент Gixy способна обнаружить:
   * [[ssrf] Server Side Request Forgery](https://github.com/yandex/gixy/blob/master/docs/ru/plugins/ssrf.md)
   * [[http_splitting] HTTP Splitting](https://github.com/yandex/gixy/blob/master/docs/ru/plugins/httpsplitting.md)
@@ -33,7 +33,7 @@ Gixy — это утилита для анализа конфигурации Ng
 pip install gixy
 ```
 
-## Использование
+# Использование
 После установки должна стать доступна консольная утилита `gixy`.
 По умолчанию Gixy ищет конфигурацию по стандартному пути `/etc/nginx/nginx.conf`, однако вы можете указать специфичное расположение:
 ```

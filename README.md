@@ -16,7 +16,7 @@ Currently supported Python versions are 2.7 and 3.5+.
 
 Disclaimer: Gixy is well tested only on GNU/Linux, other OSs may have some issues.
 
-## What it can do
+# What it can do
 Right now Gixy can find:
   * [[ssrf] Server Side Request Forgery](https://github.com/yandex/gixy/blob/master/docs/en/plugins/ssrf.md)
   * [[http_splitting] HTTP Splitting](https://github.com/yandex/gixy/blob/master/docs/en/plugins/httpsplitting.md)
