@@ -2,7 +2,7 @@
 
 Summary:        Nginx configuration static analyzer
 Name:           gixy
-Version:        0.1.2
+Version:        0.1.3
 Release:        0%{?dist}
 License:        MPLv2.0
 Group:          Development/Utilities
@@ -55,6 +55,9 @@ python setup.py install --prefix=%{_prefix} \
 ########################################################################################
 
 %changelog
+* Thu May 11 2017 Yandex Team <opensource@yandex-team.ru> - 0.1.3-0
+- Uses english versions in plugins references
+
 * Tue May 02 2017 Yandex Team <opensource@yandex-team.ru> - 0.1.2-0
 - Fixed blank comments parsing
 - Added "auth_request_set" directive
