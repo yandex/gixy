@@ -10,7 +10,7 @@ Spoofing of this header, may leads to a variety of problems, from phishing to SS
 Most of the time it's a result of using `$http_host` variable instead of `$host`.
 
 And they are quite different:
-  * `$http` - host in this order of precedence: host name from the request line, or host name from the “Host” request header field, or the server name matching a request;
+  * `$host` - host in this order of precedence: host name from the request line, or host name from the “Host” request header field, or the server name matching a request;
   * `$http_host` - "Host" request header.
 
 Config sample:
