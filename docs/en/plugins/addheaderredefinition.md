@@ -1,6 +1,6 @@
 # [add_header_redefinition] Redefining of response headers by  "add_header" directive
 
-Unfortunately, many people doesn't know how the inheritance of directives works. Most often this leads to misuse of the `add_header` directive while trying to add a new response header on the nested level.
+Unfortunately, many people don't know how the inheritance of directives works. Most often this leads to misuse of the `add_header` directive while trying to add a new response header on the nested level.
 This feature is mentioned in Nginx [docs](http://nginx.org/en/docs/http/ngx_http_headers_module.html#add_header):
 > There could be several `add_header` directives. These directives are inherited from the previous level if and only if there are no `add_header` directives defined on the current level.
 
