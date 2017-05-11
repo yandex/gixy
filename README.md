@@ -21,7 +21,7 @@ Right now Gixy can find:
   * [[ssrf] Server Side Request Forgery](https://github.com/yandex/gixy/blob/master/docs/en/plugins/ssrf.md)
   * [[http_splitting] HTTP Splitting](https://github.com/yandex/gixy/blob/master/docs/en/plugins/httpsplitting.md)
   * [[origins] Problems with referrer/origin validation](https://github.com/yandex/gixy/blob/master/docs/en/plugins/origins.md)
-  * [[add_header_redefinition] Redefining of upstream response headers with directive "add_header"](https://github.com/yandex/gixy/blob/master/docs/en/plugins/addheaderredefinition.md)
+  * [[add_header_redefinition] Redefining of response headers by  "add_header" directive](https://github.com/yandex/gixy/blob/master/docs/en/plugins/addheaderredefinition.md)
   * [[host_spoofing] Request's Host header forgery](https://github.com/yandex/gixy/blob/master/docs/en/plugins/hostspoofing.md)
   * [[valid_referers] none in valid_referers](https://github.com/yandex/gixy/blob/master/docs/en/plugins/validreferers.md)
   * [[add_header_multiline] Multiline response headers](https://github.com/yandex/gixy/blob/master/docs/en/plugins/addheadermultiline.md)

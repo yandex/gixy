@@ -1,10 +1,10 @@
-# [add_header_redefinition] Redefining of upstream response headers with directive "add_header"
+# [add_header_redefinition] Redefining of response headers by  "add_header" directive
 
-Unfortunately, many people consider the use of `add_header` directive for headers redefining a good practice.
-This approach is flawed, which is discussed in Nginx [docs](http://nginx.org/en/docs/http/ngx_http_headers_module.html#add_header):
-> There could be several add_header directives. These directives are inherited from the previous level if and only if there are no add_header directives defined on the current level.
+Unfortunately, many people doesn't know how the inheritance of directives works. Most often this leads to misuse of the `add_header` directive while trying to add a new response header on the nested level.
+This feature is mentioned in Nginx [docs](http://nginx.org/en/docs/http/ngx_http_headers_module.html#add_header):
+> There could be several `add_header` directives. These directives are inherited from the previous level if and only if there are no `add_header` directives defined on the current level.
 
-The logic is quite simple: if you set headers at one level (for example, in `server` section) and then at a lower level (let's say `location`) you set some other headers, then the first group won't apply.
+The logic is quite simple: if you set headers at one level (for example, in `server` section) and then at a lower level (let's say `location`) you set some other headers, then the first headers will discarded.
 
 It's easy to check:
   - Configuration:
