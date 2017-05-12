@@ -151,7 +151,7 @@ def main():
 
     with Gixy(config=config) as yoda:
         if path == '-':
-            with os.fdopen(sys.stdin.fileno(), mode='r') as fdata:
+            with os.fdopen(sys.stdin.fileno(), 'r') as fdata:
                 yoda.audit('<stdin>', fdata, is_stdin=True)
         else:
             with open(path, mode='r') as fdata:
