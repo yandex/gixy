@@ -225,11 +225,14 @@ if (!-e "/var/data/$dataset") {
     return 503;
 }
 
-if ($https_or_slb = (by_slb|https)) {
+if ($https_or_slb = (by_\(sl\)b|https)) {
 }
 
 if ($host ~* (lori|rage2)\.yandex\.(ru|ua|com|com\.tr)) {
     set $x_frame_options ALLOW;
+}
+
+if ($request_filename ~* ^.*?/(\d+_)([^/]+)$) {
 }
         '''
 
@@ -253,11 +256,13 @@ if ($host ~* (lori|rage2)\.yandex\.(ru|ua|com|com\.tr)) {
         ['if', ['!-e', '/var/data/$dataset'], [
             ['return', '503']
         ]],
-        ['if', ['$https_or_slb', '=', '(by_slb|https)'], [
+        ['if', ['$https_or_slb', '=', '(by_\(sl\)b|https)'], [
         ]],
         ['if', ['$host', '~*', '(lori|rage2)\.yandex\.(ru|ua|com|com\.tr)'], [
             ['set', '$x_frame_options', 'ALLOW']
         ]],
+        ['if', ['$request_filename', '~*', '^.*?/(\d+_)([^/]+)$'], [
+        ]]
     ]
 
     assert_config(config, expected)
