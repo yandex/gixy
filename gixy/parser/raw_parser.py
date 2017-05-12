@@ -1,4 +1,3 @@
-import re
 import logging
 from cached_property import cached_property
 
@@ -31,9 +30,7 @@ class RawParser(object):
         """
         Returns the parsed tree.
         """
-        # Temporary, dirty hack :(
         content = open(file_path).read()
-        content = re.sub(r'(if\s.+)\)\)(\s*\{)?$', '\\1) )\\2', content, flags=re.MULTILINE)
         return self.script.parseString(content, parseAll=True)
         # return self.script.parseFile(file_path, parseAll=True)
 
@@ -61,10 +58,15 @@ class RawParser(object):
             Keyword("=") |
             Keyword("~*") | Keyword("~") |
             (Literal("-") + (Literal("f") | Literal("d") | Literal("e") | Literal("x")))))
-        condition = (
+        condition_body = (
             (if_modifier + Optional(space) + value) |
             (variable + Optional(space + if_modifier + Optional(space) + value))
         )
+        # This ugly workaround needed to parse unquoted regex with nested parentheses
+        # pyparsing.nestedExpr doesn't work in some rare cases like: ($http_user_agent ~* \( )
+        # so we capture all content between parentheses and then parse it:)
+        # TODO(buglloc): may be use something better?
+        condition = Regex(r'\(.*\)').setParseAction(lambda s, l, t: condition_body.parseString(t[0][1:-1]))
 
         # rules
         include = (
@@ -114,9 +116,7 @@ class RawParser(object):
 
         if_block << (
             Keyword("if") +
-            Suppress("(") +
             Group(condition) +
-            Suppress(")") +
             Group(
                 left_bracket +
                 Optional(sub_block) +
