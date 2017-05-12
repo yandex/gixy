@@ -25,17 +25,15 @@ class RawParser(object):
     """
 
     def __init__(self):
-        self._script = None
+        self._if_fixer = re.compile(r'(if\s.+)\)\)(\s*\{)?$', flags=re.MULTILINE)
 
-    def parse(self, file_path):
+    def parse(self, data):
         """
         Returns the parsed tree.
         """
         # Temporary, dirty hack :(
-        content = open(file_path).read()
-        content = re.sub(r'(if\s.+)\)\)(\s*\{)?$', '\\1) )\\2', content, flags=re.MULTILINE)
+        content = self._if_fixer.sub('\\1) )\\2', data)
         return self.script.parseString(content, parseAll=True)
-        # return self.script.parseFile(file_path, parseAll=True)
 
     @cached_property
     def script(self):

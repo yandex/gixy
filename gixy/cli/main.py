@@ -98,7 +98,7 @@ def main():
     _init_logger(args.debug)
 
     path = os.path.expanduser(args.nginx_file)
-    if not os.path.isfile(path):
+    if path != '-' and not os.path.exists(path):
         sys.stderr.write('Please specify path to Nginx configuration.\n\n')
         parser.print_help()
         sys.exit(1)
@@ -150,7 +150,13 @@ def main():
         config.set_for(name, options)
 
     with Gixy(config=config) as yoda:
-        yoda.audit(path)
+        if path == '-':
+            with os.fdopen(sys.stdin.fileno(), mode='r') as fdata:
+                yoda.audit('<stdin>', fdata, is_stdin=True)
+        else:
+            with open(path, mode='r') as fdata:
+                yoda.audit(path, fdata, is_stdin=False)
+
         formatted = formatters()[config.output_format]().format(yoda)
         if args.output_file:
             with open(config.output_file, 'w') as f:
