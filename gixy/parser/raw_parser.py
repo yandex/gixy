@@ -22,14 +22,11 @@ class RawParser(object):
     """
     A class that parses nginx configuration with pyparsing
     """
-
-    def __init__(self):
-        self._if_fixer = re.compile(r'(if\s.+)\)\)(\s*\{)?$', flags=re.MULTILINE)
-
     def parse(self, data):
         """
         Returns the parsed tree.
         """
+
         return self.script.parseString(data, parseAll=True)
 
     @cached_property
