@@ -26,8 +26,11 @@ class RawParser(object):
         """
         Returns the parsed tree.
         """
+        content = data.strip()
+        if not content:
+            return []
 
-        return self.script.parseString(data, parseAll=True)
+        return self.script.parseString(content, parseAll=True)
 
     @cached_property
     def script(self):
