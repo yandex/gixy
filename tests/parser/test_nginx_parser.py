@@ -1,16 +1,11 @@
 from nose.tools import assert_is_instance, assert_equal
-import mock
-from six import StringIO
-from six.moves import builtins
 from gixy.parser.nginx_parser import NginxParser
 from gixy.directives.directive import *
 from gixy.directives.block import *
 
 
 def _parse(config):
-    with mock.patch('%s.open' % builtins.__name__) as mock_open:
-        mock_open.return_value = StringIO(config)
-        return NginxParser('/foo/bar', allow_includes=False).parse('/foo/bar')
+    return NginxParser(cwd='', allow_includes=False).parse(config)
 
 
 def test_directive():

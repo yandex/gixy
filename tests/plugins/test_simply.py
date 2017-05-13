@@ -81,7 +81,7 @@ def yoda_provider(plugin, plugin_options=None):
 def check_configuration(plugin, config_path, test_config):
     plugin_options = parse_plugin_options(config_path)
     with yoda_provider(plugin, plugin_options) as yoda:
-        yoda.audit(config_path)
+        yoda.audit(config_path, open(config_path, mode='r'))
         results = RawFormatter().format(yoda)
 
         assert_equals(len(results), 1, 'Should have one report')
@@ -102,7 +102,7 @@ def check_configuration(plugin, config_path, test_config):
 
 def check_configuration_fp(plugin, config_path, test_config):
     with yoda_provider(plugin) as yoda:
-        yoda.audit(config_path)
+        yoda.audit(config_path, open(config_path, mode='r'))
         results = RawFormatter().format(yoda)
 
         assert_equals(len(results), 0,
