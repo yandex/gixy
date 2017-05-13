@@ -497,6 +497,22 @@ add_header X-Blank-Comment blank;
     assert_config(config, expected)
 
 
+def test_upstream_dot():
+    config = '''
+upstream test.mysite.com {
+    server 127.0.0.1:9009;
+}
+        '''
+
+    expected = [
+        ['upstream', ['test.mysite.com'], [
+            ['server', '127.0.0.1:9009']
+        ]],
+    ]
+
+    assert_config(config, expected)
+
+
 def test_empty_config():
     config = '''
         '''
