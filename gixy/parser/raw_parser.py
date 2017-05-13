@@ -135,7 +135,7 @@ class RawParser(object):
 
         hash_block << (
             keyword +
-            Group(OneOrMore(space + variable)) +
+            Group(OneOrMore(space + value)) +
             Group(
                 left_bracket +
                 Optional(OneOrMore(hash_value)) +
@@ -144,7 +144,7 @@ class RawParser(object):
 
         generic_block << (
             keyword +
-            Group(ZeroOrMore(space + variable)) +
+            Group(ZeroOrMore(space + value)) +
             Group(
                 left_bracket +
                 Optional(sub_block) +
@@ -153,7 +153,7 @@ class RawParser(object):
 
         unparsed_block << (
             keyword +
-            Group(ZeroOrMore(space + variable)) +
+            Group(ZeroOrMore(space + value)) +
             nestedExpr(opener="{", closer="}")
         )("unparsed_block")
 
