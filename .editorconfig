@@ -1,0 +1,19 @@
+root = true
+
+[*]
+end_of_file = lf
+insert_final_newline = true
+
+[*.{py,j2}]
+charset = utf-8
+
+[*.py]
+indent_style = space
+indent_size = 4
+
+[Makefile]
+indent_style = tab
+
+[.travis.yml]
+indent_style = space
+indent_size = 2

@@ -141,7 +141,7 @@ class IfBlock(Block):
             # if ($request_method = POST)
             self.variable, self.operand, self.value = args
         else:
-            raise Exception('Unknown "if" definition')
+            raise Exception('Unknown "if" definition, args: {}'.format(repr(args)))
 
     def __str__(self):
         return '{} ({}) {{'.format(self.name, ' '.join(self.args))
