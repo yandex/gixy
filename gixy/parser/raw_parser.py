@@ -22,17 +22,15 @@ class RawParser(object):
     """
     A class that parses nginx configuration with pyparsing
     """
-
-    def __init__(self):
-        self._script = None
-
-    def parse(self, file_path):
+    def parse(self, data):
         """
         Returns the parsed tree.
         """
-        content = open(file_path).read()
+        content = data.strip()
+        if not content:
+            return []
+
         return self.script.parseString(content, parseAll=True)
-        # return self.script.parseFile(file_path, parseAll=True)
 
     @cached_property
     def script(self):
