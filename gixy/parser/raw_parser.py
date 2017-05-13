@@ -3,7 +3,7 @@ from cached_property import cached_property
 
 from pyparsing import (
     Literal, Suppress, White, Word, alphanums, Forward, Group, Optional, Combine,
-    Keyword, OneOrMore, ZeroOrMore, Regex, QuotedString, nestedExpr)
+    Keyword, OneOrMore, ZeroOrMore, Regex, QuotedString, nestedExpr, ParseResults)
 
 LOG = logging.getLogger(__name__)
 
@@ -23,16 +23,15 @@ class RawParser(object):
     A class that parses nginx configuration with pyparsing
     """
 
-    def __init__(self):
-        self._script = None
-
-    def parse(self, file_path):
+    def parse(self, data):
         """
         Returns the parsed tree.
         """
-        content = open(file_path).read()
-        return self.script.parseString(content, parseAll=True)
-        # return self.script.parseFile(file_path, parseAll=True)
+        content = data.strip()
+        if not content:
+            return ParseResults()
+
+        return self.script.parseString(data, parseAll=True)
 
     @cached_property
     def script(self):

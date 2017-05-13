@@ -1,17 +1,13 @@
 from nose.tools import assert_equals, assert_is_instance, assert_is_not_none, assert_is_none, assert_true, assert_false
-import mock
-from six import StringIO
-from six.moves import builtins
 from gixy.parser.nginx_parser import NginxParser
 from gixy.directives.block import *
 
 # TODO(buglloc): what about include block?
 
+
 def _get_parsed(config):
-    with mock.patch('%s.open' % builtins.__name__) as mock_open:
-        mock_open.return_value = StringIO(config)
-        root = NginxParser('/foo/bar', allow_includes=False).parse('/foo/bar')
-        return root.children[0]
+    root = NginxParser(cwd='', allow_includes=False).parse(config)
+    return root.children[0]
 
 
 def test_block():

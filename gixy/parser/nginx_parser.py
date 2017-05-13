@@ -12,26 +12,32 @@ LOG = logging.getLogger(__name__)
 
 
 class NginxParser(object):
-    def __init__(self, file_path, allow_includes=True):
-        self.base_file_path = file_path
-        self.cwd = os.path.dirname(file_path)
+    def __init__(self, cwd='', allow_includes=True):
+        self.cwd = cwd
         self.configs = {}
         self.is_dump = False
         self.allow_includes = allow_includes
         self.directives = {}
+        self.parser = raw_parser.RawParser()
         self._init_directives()
 
-    def parse(self, file_path, root=None):
-        LOG.debug("Parse file: {}".format(file_path))
+    def parse_file(self, path, root=None):
+        LOG.debug("Parse file: {}".format(path))
+        content = open(path).read()
+        return self.parse(content=content, root=root, path_info=path)
 
+    def parse(self, content, root=None, path_info=None):
         if not root:
             root = block.Root()
 
         try:
-            parser = raw_parser.RawParser()
-            parsed = parser.parse(file_path)
+            parsed = self.parser.parse(content)
         except ParseException as e:
-            LOG.error('Failed to parse config "{file}": {error}'.format(file=file_path, error=str(e)))
+            error_msg = 'char {char} (line:{line}, col:{col})'.format(char=e.loc, line=e.lineno, col=e.col)
+            if path_info:
+                LOG.error('Failed to parse config "{file}": {error}'.format(file=path_info, error=error_msg))
+            else:
+                LOG.error('Failed to parse config: {error}'.format(error=error_msg))
             return root
 
         if len(parsed) and parsed[0].getName() == 'file_delimiter':
@@ -108,7 +114,7 @@ class NginxParser(object):
         for file_path in glob.iglob(path):
             include = block.IncludeBlock('include', [file_path])
             parent.append(include)
-            self.parse(file_path, include)
+            self.parse_file(file_path, include)
 
         if not file_path:
             LOG.warning("File not found: {}".format(path))
