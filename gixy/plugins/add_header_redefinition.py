@@ -22,7 +22,6 @@ class add_header_redefinition(Plugin):
                            'x-content-type-options',
                            'x-xss-protection',
                            'content-security-policy',
-                           'strict-transport-security',
                            'cache-control'}
                }
 
