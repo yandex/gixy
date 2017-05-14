@@ -234,6 +234,8 @@ if ($host ~* (lori|rage2)\.yandex\.(ru|ua|com|com\.tr)) {
 
 if ($request_filename ~* ^.*?/(\d+_)([^/]+)$) {
 }
+
+if ($foo = "BAR") { rewrite ^(.*)$ /bar; }
         '''
 
     expected = [
@@ -262,6 +264,9 @@ if ($request_filename ~* ^.*?/(\d+_)([^/]+)$) {
             ['set', '$x_frame_options', 'ALLOW']
         ]],
         ['if', ['$request_filename', '~*', '^.*?/(\d+_)([^/]+)$'], [
+        ]],
+        ['if', ['$foo', '=', 'BAR'], [
+            ['rewrite', '^(.*)$', '/bar']
         ]]
     ]
 
