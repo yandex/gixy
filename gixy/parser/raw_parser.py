@@ -1,4 +1,6 @@
 import logging
+import codecs
+import six
 from cached_property import cached_property
 
 from pyparsing import (
@@ -27,11 +29,19 @@ class RawParser(object):
         """
         Returns the parsed tree.
         """
-        content = data.strip()
+        if isinstance(data, six.binary_type):
+            if data[:3] == codecs.BOM_UTF8:
+                encoding = 'utf-8-sig'
+            else:
+                encoding = 'latin1'
+            content = data.decode(encoding).strip()
+        else:
+            content = data.strip()
+
         if not content:
             return ParseResults()
 
-        return self.script.parseString(data, parseAll=True)
+        return self.script.parseString(content, parseAll=True)
 
     @cached_property
     def script(self):

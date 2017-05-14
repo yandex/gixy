@@ -23,7 +23,7 @@ class NginxParser(object):
 
     def parse_file(self, path, root=None):
         LOG.debug("Parse file: {}".format(path))
-        content = open(path).read()
+        content = open(path, mode='rb').read()
         return self.parse(content=content, root=root, path_info=path)
 
     def parse(self, content, root=None, path_info=None):
