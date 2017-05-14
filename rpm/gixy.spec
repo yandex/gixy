@@ -2,7 +2,7 @@
 
 Summary:        Nginx configuration static analyzer
 Name:           gixy
-Version:        0.1.3
+Version:        0.1.4
 Release:        0%{?dist}
 License:        MPLv2.0
 Group:          Development/Utilities
@@ -55,6 +55,10 @@ python setup.py install --prefix=%{_prefix} \
 ########################################################################################
 
 %changelog
+* Sun May 14 2017 Yandex Team <opensource@yandex-team.ru> - 0.1.4-0
+- Allow processing stdin, file descriptors
+- Fixed configuration parser
+
 * Thu May 11 2017 Yandex Team <opensource@yandex-team.ru> - 0.1.3-0
 - Uses english versions in plugins references
 
