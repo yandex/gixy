@@ -41,7 +41,7 @@ class Directive(object):
         raise NotImplementedError()
 
     def __str__(self):
-        return '{} {};'.format(self.name, ' '.join(self.args))
+        return '{name} {args};'.format(name=self.name, args=' '.join(self.args))
 
 
 class AddHeaderDirective(Directive):

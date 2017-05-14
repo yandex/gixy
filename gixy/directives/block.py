@@ -60,7 +60,7 @@ class Block(Directive):
         self.children.append(directive)
 
     def __str__(self):
-        return '{} {} {}'.format(self.name, ' '.join(self.args), '{')
+        return '{name} {args} {{'.format(name=self.name, args=' '.join(self.args))
 
 
 class Root(Block):
@@ -89,7 +89,7 @@ class ServerBlock(Block):
     def __str__(self):
         server_names = [str(sn) for sn in self.find('server_name')]
         if server_names:
-            return 'server {{\n{}'.format('\n'.join(server_names[:2]))
+            return 'server {{\n{0}'.format('\n'.join(server_names[:2]))
         return 'server {'
 
 
@@ -141,10 +141,10 @@ class IfBlock(Block):
             # if ($request_method = POST)
             self.variable, self.operand, self.value = args
         else:
-            raise Exception('Unknown "if" definition, args: {}'.format(repr(args)))
+            raise Exception('Unknown "if" definition, args: {0!r}'.format(args))
 
     def __str__(self):
-        return '{} ({}) {{'.format(self.name, ' '.join(self.args))
+        return '{name} ({args}) {{'.format(name=self.name, args=' '.join(self.args))
 
 
 class IncludeBlock(Block):
@@ -156,7 +156,7 @@ class IncludeBlock(Block):
         self.file_path = args[0]
 
     def __str__(self):
-        return 'include {};'.format(self.file_path)
+        return 'include {0};'.format(self.file_path)
 
 
 class MapBlock(Block):

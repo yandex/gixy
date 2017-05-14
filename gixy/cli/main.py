@@ -16,7 +16,6 @@ LOG = logging.getLogger()
 def _init_logger(debug=False):
     LOG.handlers = []
     log_level = logging.DEBUG if debug else logging.INFO
-    logging.captureWarnings(True)
 
     LOG.setLevel(log_level)
     handler = logging.StreamHandler(sys.stderr)
@@ -31,7 +30,7 @@ def _create_plugin_help(option):
     else:
         default = str(option)
 
-    return 'Default: {}'.format(default)
+    return 'Default: {0}'.format(default)
 
 
 def _get_cli_parser():
@@ -41,7 +40,7 @@ def _get_cli_parser():
 
     parser.add_argument(
         '-v', '--version', action='version',
-        version='Gixy v{}'.format(gixy.version))
+        version='Gixy v{0}'.format(gixy.version))
 
     parser.add_argument(
         '-l', '--level', dest='level', action='count', default=0,
@@ -106,7 +105,7 @@ def main():
     try:
         severity = gixy.severity.ALL[args.level]
     except IndexError:
-        sys.stderr.write('Too high level filtering. Maximum level: -{}\n'.format('l' * (len(gixy.severity.ALL) - 1)))
+        sys.stderr.write('Too high level filtering. Maximum level: -{0}\n'.format('l' * (len(gixy.severity.ALL) - 1)))
         sys.exit(1)
 
     if args.tests:
@@ -132,7 +131,7 @@ def main():
         name = plugin_cls.__name__
         options = copy.deepcopy(plugin_cls.options)
         for opt_key, opt_val in options.items():
-            option_name = '{}:{}'.format(name, opt_key)
+            option_name = '{name}:{key}'.format(name=name, key=opt_key)
             if option_name not in args:
                 continue
 

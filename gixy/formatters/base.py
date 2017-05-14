@@ -4,7 +4,7 @@ from gixy.directives import block
 
 
 class BaseFormatter(object):
-    skip_parents = {block.Root, block.HttpBlock}
+    skip_parents = set([block.Root, block.HttpBlock])
 
     def format_reports(self, reports, stats):
         raise NotImplementedError("Formatter must override format_reports function")
@@ -74,11 +74,11 @@ class BaseFormatter(object):
                 if leap.is_block:
                     result.append('')
                 directive = str(leap).replace('\n', '\n' + '\t' * (level + 1))
-                result.append('{:s}{:s}'.format('\t' * level, directive))
+                result.append('{indent:s}{dir:s}'.format(indent='\t' * level, dir=directive))
 
             if leap.is_block:
                 result.extend(self._traverse_tree(leap, points, level + 1 if printable else level))
                 if printable and have_parentheses:
-                    result.append('{:s}}}'.format('\t' * level))
+                    result.append('{indent:s}}}'.format(indent='\t' * level))
 
         return result

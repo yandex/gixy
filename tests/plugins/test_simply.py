@@ -1,4 +1,5 @@
-from nose.tools import assert_equals, assert_true, assert_in
+from nose.tools import assert_equals, assert_true
+from tests.asserts import assert_in
 import os
 from os import path
 import json
@@ -55,9 +56,9 @@ def test_from_config():
     for plugin in manager.plugins:
         plugin = plugin.name
         assert_true(plugin in tested_plugins,
-                    'Plugin "{}" should have at least one simple test config'.format(plugin))
+                    'Plugin {name!r} should have at least one simple test config'.format(name=plugin))
         assert_true(plugin in tested_fp_plugins,
-                    'Plugin "{}" should have at least one simple test config with false positive'.format(plugin))
+                    'Plugin {name!r} should have at least one simple test config with false positive'.format(name=plugin))
 
 
 def parse_plugin_options(config_path):
