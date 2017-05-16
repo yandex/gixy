@@ -1,4 +1,5 @@
-from nose.tools import assert_equals, assert_is_instance, assert_false, assert_true
+from nose.tools import assert_equals, assert_false, assert_true
+from tests.asserts import assert_is_instance
 from gixy.parser.nginx_parser import NginxParser
 from gixy.directives.directive import *
 

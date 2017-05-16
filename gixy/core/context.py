@@ -75,7 +75,7 @@ class Context(object):
                     result = builtins.builtin_var(name)
 
         if not result:
-            LOG.info("Can't find variable '{}'".format(name))
+            LOG.info("Can't find variable '{0}'".format(name))
         return result
 
     def __deepcopy__(self, memo):

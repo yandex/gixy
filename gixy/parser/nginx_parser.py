@@ -22,8 +22,8 @@ class NginxParser(object):
         self._init_directives()
 
     def parse_file(self, path, root=None):
-        LOG.debug("Parse file: {}".format(path))
-        content = open(path, mode='rb').read()
+        LOG.debug("Parse file: {0}".format(path))
+        content = open(path).read()
         return self.parse(content=content, root=root, path_info=path)
 
     def parse(self, content, root=None, path_info=None):
@@ -103,7 +103,7 @@ class NginxParser(object):
         if self.is_dump:
             return self._resolve_dump_include(pattern=pattern, parent=parent)
         if not self.allow_includes:
-            LOG.debug('Includes are disallowed, skip: {}'.format(pattern))
+            LOG.debug('Includes are disallowed, skip: {0}'.format(pattern))
             return
 
         return self._resolve_file_include(pattern=pattern, parent=parent)
@@ -117,7 +117,7 @@ class NginxParser(object):
             self.parse_file(file_path, include)
 
         if not file_path:
-            LOG.warning("File not found: {}".format(path))
+            LOG.warning("File not found: {0}".format(path))
 
     def _resolve_dump_include(self, pattern, parent):
         path = os.path.join(self.cwd, pattern)
@@ -130,7 +130,7 @@ class NginxParser(object):
                 self.parse_block(parsed, include)
 
         if not founded:
-            LOG.warning("File not found: {}".format(path))
+            LOG.warning("File not found: {0}".format(path))
 
     def _prepare_dump(self, parsed_block):
         filename = ''
