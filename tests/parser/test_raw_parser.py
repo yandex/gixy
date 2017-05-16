@@ -1,7 +1,4 @@
 from nose.tools import assert_equals
-import mock
-from six import StringIO
-from six.moves import builtins
 from gixy.parser.raw_parser import *
 
 
@@ -525,6 +522,28 @@ def test_empty_config():
     expected = []
 
     assert_config(config, expected)
+
+
+def test_utfbom_decoding():
+    config = b'''\xef\xbb\xbf
+add_header X-Test "Windows-1251";
+        '''
+
+    expected = [
+        ['add_header', 'X-Test', 'Windows-1251']
+    ]
+
+    assert_config(config, expected)
+
+
+def test_national_comment_decoding():
+    config = b'''
+# \xeb\xff-\xeb\xff-\xeb\xff = Lya-lya-lya
+add_header X-Test "Windows-1251";
+        '''
+
+    actual = RawParser().parse(config)
+    assert_equals(len(actual.asList()), 2)
 
 
 def assert_config(config, expected):

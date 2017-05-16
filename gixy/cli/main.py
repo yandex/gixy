@@ -150,10 +150,10 @@ def main():
 
     with Gixy(config=config) as yoda:
         if path == '-':
-            with os.fdopen(sys.stdin.fileno(), 'r') as fdata:
+            with os.fdopen(sys.stdin.fileno(), 'rb') as fdata:
                 yoda.audit('<stdin>', fdata, is_stdin=True)
         else:
-            with open(path, mode='r') as fdata:
+            with open(path, mode='rb') as fdata:
                 yoda.audit(path, fdata, is_stdin=False)
 
         formatted = formatters()[config.output_format]().format(yoda)
