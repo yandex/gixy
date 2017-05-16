@@ -1,7 +1,7 @@
 # [add_header_multiline] Multiline response headers
 
 You should avoid using multiline response headers, because:
-  * they are depricated (see [RFC 7230](https://tools.ietf.org/html/rfc7230#section-3.2.4));
+  * they are deprecated (see [RFC 7230](https://tools.ietf.org/html/rfc7230#section-3.2.4));
   * some HTTP-clients and web browser never supported them (e.g. IE/Edge/Nginx).
 
 ## How can I find it?
