@@ -92,7 +92,7 @@ class ArgsParser(ArgumentParser):
         """
         keys = []
         for arg in action.option_strings:
-            if arg in {'--config', '--write-config', '--version'}:
+            if arg in ['--config', '--write-config', '--version']:
                 continue
             if any([arg.startswith(2 * c) for c in self.prefix_chars]):
                 keys += [arg[2:], arg]  # eg. for '--bla' return ['bla', '--bla']

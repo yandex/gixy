@@ -18,11 +18,11 @@ class add_header_redefinition(Plugin):
                    'See documentation: http://nginx.org/en/docs/http/ngx_http_headers_module.html#add_header')
     help_url = 'https://github.com/yandex/gixy/blob/master/docs/en/plugins/addheaderredefinition.md'
     directives = ['server', 'location', 'if']
-    options = {'headers': {'x-frame-options',
-                           'x-content-type-options',
-                           'x-xss-protection',
-                           'content-security-policy',
-                           'cache-control'}
+    options = {'headers': set(['x-frame-options',
+                               'x-content-type-options',
+                               'x-xss-protection',
+                               'content-security-policy',
+                               'cache-control'])
                }
 
     def __init__(self, config):

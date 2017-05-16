@@ -39,16 +39,16 @@ class origins(Plugin):
         self.valid_re = re.compile(regex)
 
     def audit(self, directive):
-        if directive.operand not in {'~', '~*', '!~', '!~*'}:
+        if directive.operand not in ['~', '~*', '!~', '!~*']:
             # Not regexp
             return
 
-        if directive.variable not in {'$http_referer', '$http_origin'}:
+        if directive.variable not in ['$http_referer', '$http_origin']:
             # Not interesting
             return
 
         invalid_referers = set()
-        regexp = Regexp(directive.value, case_sensitive=(directive.operand in {'~', '!~'}))
+        regexp = Regexp(directive.value, case_sensitive=(directive.operand in ['~', '!~']))
         for value in regexp.generate('/', anchored=True):
             if value.startswith('^'):
                 value = value[1:]

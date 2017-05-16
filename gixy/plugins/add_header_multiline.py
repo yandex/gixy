@@ -33,7 +33,7 @@ def get_header_values(directive):
     result = []
     skip_next = False
     for arg in directive.args:
-        if arg in {'-s', '-t'}:
+        if arg in ['-s', '-t']:
             # Skip next value, because it's not a header
             skip_next = True
         elif arg.startswith('-'):

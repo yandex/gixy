@@ -432,7 +432,7 @@ class BranchToken(Token):
             elif isinstance(token, sre_parse.SubPattern):
                 self.childs.append(InternalSubpatternToken(token=token, parent=self.parent, regexp=self.regexp))
             else:
-                raise RuntimeError('Unexpected token {} in branch'.format(token))
+                raise RuntimeError('Unexpected token {0} in branch'.format(token))
 
     def can_contain(self, char, skip_literal=True):
         for child in self.childs:
@@ -461,7 +461,7 @@ class BranchToken(Token):
         return res
 
     def __str__(self):
-        return '(?:{})'.format('|'.join(str(x) for x in self.childs))
+        return '(?:{0})'.format('|'.join(str(x) for x in self.childs))
 
 
 class SubpatternToken(Token):
@@ -661,7 +661,7 @@ class InToken(Token):
             elif isinstance(child, CategoryToken):
                 blacklisted.update(child.char_list)
             else:
-                LOG.info('Unexpected child "{!r}"'.format(child))
+                LOG.info('Unexpected child "{0!r}"'.format(child))
 
         for char in _build_reverse_list(set()):
             if char not in blacklisted:
@@ -756,7 +756,7 @@ class GroupRefToken(Token):
         return self.group.generate(context)
 
     def __str__(self):
-        return '\\\\{}'.format(self.id)
+        return '\\\\{0}'.format(self.id)
 
 
 class AssertToken(Token):
@@ -854,7 +854,7 @@ def parse(sre_obj, parent=None, regexp=None):
         elif token[0] == sre_parse.ASSERT_NOT:
             pass  # TODO(buglloc): Do it!
         else:
-            LOG.info('Unexpected token "{}"'.format(token[0]))
+            LOG.info('Unexpected token "{0}"'.format(token[0]))
 
     return result
 

@@ -1,4 +1,5 @@
-from nose.tools import assert_equals, assert_is_instance, assert_is_not_none, assert_is_none, assert_true, assert_false
+from nose.tools import assert_equals, assert_true, assert_false
+from tests.asserts import assert_is_instance, assert_is_none, assert_is_not_none
 from gixy.parser.nginx_parser import NginxParser
 from gixy.directives.block import *
 
@@ -148,7 +149,7 @@ def test_block_some_flat():
         '''
 
     directive = _get_parsed(config)
-    for d in {'default_type', 'sendfile', 'keepalive_timeout'}:
+    for d in ['default_type', 'sendfile', 'keepalive_timeout']:
         c = directive.some(d, flat=True)
         assert_is_not_none(c)
         assert_equals(c.name, d)

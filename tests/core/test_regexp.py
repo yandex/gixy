@@ -232,24 +232,24 @@ def test_negative_must_startswith():
 
 def test_generate():
     cases = (
-        (r'foo', {'foo'}),
-        (r'^sss', {'^sss'}),
-        (r'(1)(2)(3)', {'123'}),
-        (r'(1)((2)|(?:3))', {'12', '13'}),
-        (r'(^1?2?|aa/)', {'^', '^1', '^2', '^12', 'aa/'}),
-        (r'^https?://yandex.ru', {'^http://yandex|ru', '^https://yandex|ru'}),
-        (r'(^bb|11)$', {'^bb$', '11$'}),
-        (r'(http|https)', {'http', 'https'}),
-        (r'1*', {'', '11111'}),
-        (r'1*?', {'', '11111'}),
-        (r'1{0}?2', {'2'}),
-        (r'1{0}2', {'2'}),
-        (r'1+', {'11111'}),
-        (r'[^/]?', {'', '|'}),
-        (r'^http://(foo|bar)|baz', {'^http://foo', '^http://bar', 'baz'}),
-        (r'[^\x00-\x7b|\x7e-\xff]', {'\x7d'}),
-        (r'(a|b|c)', {'a', 'b', 'c'}),
-        (r'[xyz]', {'x', 'y', 'z'})
+        (r'foo', ['foo']),
+        (r'^sss', ['^sss']),
+        (r'(1)(2)(3)', ['123']),
+        (r'(1)((2)|(?:3))', ['12', '13']),
+        (r'(^1?2?|aa/)', ['^', '^1', '^2', '^12', 'aa/']),
+        (r'^https?://yandex.ru', ['^http://yandex|ru', '^https://yandex|ru']),
+        (r'(^bb|11)$', ['^bb$', '11$']),
+        (r'(http|https)', ['http', 'https']),
+        (r'1*', ['', '11111']),
+        (r'1*?', ['', '11111']),
+        (r'1[0]?2', ['102', '12']),
+        (r'1[0]2', ['102']),
+        (r'1+', ['11111']),
+        (r'[^/]?', ['', '|']),
+        (r'^http://(foo|bar)|baz', ['^http://foo', '^http://bar', 'baz']),
+        (r'[^\x00-\x7b|\x7e-\xff]', ['\x7d']),
+        (r'(a|b|c)', ['a', 'b', 'c']),
+        (r'[xyz]', ['x', 'y', 'z'])
     )
     for case in cases:
         regexp, values = case
@@ -258,7 +258,7 @@ def test_generate():
 
 def test_strict_generate():
     reg = Regexp('^foo|bar', strict=True)
-    assert_equals(sorted(reg.generate('|', anchored=True)), sorted({'^foo', '^bar'}))
+    assert_equals(sorted(reg.generate('|', anchored=True)), sorted(['^foo', '^bar']))
 
 
 def test_gen_anchor():
@@ -284,63 +284,63 @@ def test_group_can_contains():
     source = '/some/(?P<action>[^/:.]+)/'
     reg = Regexp(source)
     assert_true(reg.can_contain('\n'),
-                'Whole regex "{}" can contains "{}"'.format(source, '\\n'))
+                'Whole regex "{src}" can contains {sym!r}'.format(src=source, sym='\\n'))
 
     assert_true(reg.group(0).can_contain('\n'),
-                'Group 0 from regex "{}" can contains "{}"'.format(source, '\\n'))
+                'Group 0 from regex "{src}" can contains {sym!r}'.format(src=source, sym='\\n'))
 
     assert_true(reg.group('action').can_contain('\n'),
-                'Group "action" from regex "{}" can contains "{}"'.format(source, '\\n'))
+                'Group "action" from regex "{src}" can contains {sym!r}'.format(src=source, sym='\\n'))
 
     assert_true(reg.group(1).can_contain('\n'),
-                'Group 1 from regex "{}" can contains "{}"'.format(source, '\\n'))
+                'Group 1 from regex "{src}" can contains {sym!r}'.format(src=source, sym='\\n'))
 
     assert_false(reg.group('action').can_contain('/'),
-                 'Group "action" from regex "{}" CAN\'T (!) contain "{}"'.format(source, '/'))
+                 'Group "action" from regex "{src}" CAN\'T (!) contain {sym!r}'.format(src=source, sym='/'))
 
 
 def check_positive_contain(regexp, char):
     reg = Regexp(regexp, case_sensitive=True)
     assert_true(reg.can_contain(char),
-                '"{}" should contain "{}"'.format(regexp, char))
+                '{reg!r} should contain {chr!r}'.format(reg=regexp, chr=char))
 
     reg = Regexp(regexp, case_sensitive=False)
     char = char.upper()
     assert_true(reg.can_contain(char),
-                '"{}" (case insensitive) should contain "{}"'.format(regexp, char))
+                '{reg!r} (case insensitive) should contain {chr!r}'.format(reg=regexp, chr=char))
 
 
 def check_negative_contain(regexp, char):
     reg = Regexp(regexp, case_sensitive=True)
     assert_false(reg.can_contain(char),
-                 '"{}" should not contain "{}"'.format(regexp, char))
+                 '{reg!r} should not contain {chr!r}'.format(reg=regexp, chr=char))
 
     reg = Regexp(regexp, case_sensitive=False)
     char = char.upper()
     assert_false(reg.can_contain(char),
-                 '"{}" (case insensitive) should not contain "{}"'.format(regexp, char))
+                 '{reg!r} (case insensitive) should not contain {chr!r}'.format(reg=regexp, chr=char))
 
 
 def check_positive_startswith(regexp, char, strict):
     reg = Regexp(regexp, case_sensitive=True, strict=strict)
     assert_true(reg.can_startswith(char),
-                '"{}" can start\'s with "{}"'.format(regexp, char))
+                '{reg!r} can start\'s with {chr!r}'.format(reg=regexp, chr=char))
 
     reg = Regexp(regexp, case_sensitive=False, strict=strict)
     char = char.upper()
     assert_true(reg.can_startswith(char),
-                '"{}" (case insensitive) can start\'s with "{}"'.format(regexp, char))
+                '{reg!r} (case insensitive) can start\'s with {chr!r}'.format(reg=regexp, chr=char))
 
 
 def check_negative_startswith(regexp, char, strict):
     reg = Regexp(regexp, case_sensitive=True, strict=strict)
     assert_false(reg.can_startswith(char),
-                 '"{}" can\'t start\'s with "{}"'.format(regexp, char))
+                 '{reg!r} can\'t start\'s with {chr!r}'.format(reg=regexp, chr=char))
 
     reg = Regexp(regexp, case_sensitive=False, strict=strict)
     char = char.upper()
     assert_false(reg.can_startswith(char),
-                 '"{}" (case insensitive) can\'t start\'s with "{}"'.format(regexp, char))
+                 '{reg!r} (case insensitive) can\'t start\'s with {chr!r}'.format(reg=regexp, chr=char))
 
 
 def check_groups_names(regexp, groups):
@@ -356,45 +356,46 @@ def check_to_string(regexp, string):
 def check_positive_must_contain(regexp, char):
     reg = Regexp(regexp, case_sensitive=True)
     assert_true(reg.must_contain(char),
-                '"{}" must contain with "{}"'.format(regexp, char))
+                '{reg!r} must contain with {chr!r}'.format(reg=regexp, chr=char))
 
     reg = Regexp(regexp, case_sensitive=False)
     char = char.upper()
     assert_true(reg.must_contain(char),
-                '"{}" (case insensitive) must contain with "{}"'.format(regexp, char))
+                '{reg!r} (case insensitive) must contain with {chr!r}'.format(reg=regexp, chr=char))
 
 
 def check_negative_must_contain(regexp, char):
     reg = Regexp(regexp, case_sensitive=True)
     assert_false(reg.must_contain(char),
-                 '"{}" must NOT contain with "{}"'.format(regexp, char))
+                 '{reg!r} must NOT contain with {chr!r}'.format(reg=regexp, chr=char))
 
     reg = Regexp(regexp, case_sensitive=False)
     char = char.upper()
     assert_false(reg.must_contain(char),
-                 '"{}" (case insensitive) must NOT contain with "{}"'.format(regexp, char))
+                 '{reg!r} (case insensitive) must NOT contain with {chr!r}'.format(reg=regexp, chr=char))
 
 
 def check_positive_must_startswith(regexp, char, strict):
     reg = Regexp(regexp, case_sensitive=True, strict=strict)
     assert_true(reg.must_startswith(char),
-                '"{}" MUST start\'s with "{}"'.format(regexp, char))
+                '{reg!r} MUST start\'s with {chr!r}'.format(reg=regexp, chr=char))
 
     reg = Regexp(regexp, case_sensitive=False, strict=strict)
     char = char.upper()
     assert_true(reg.must_startswith(char),
-                '"{}" (case insensitive) MUST start\'s with "{}"'.format(regexp, char))
+                '{reg!r} (case insensitive) MUST start\'s with {chr!r}'.format(reg=regexp, chr=char))
 
 
 def check_negative_must_startswith(regexp, char, strict):
     reg = Regexp(regexp, case_sensitive=True, strict=strict)
     assert_false(reg.must_startswith(char),
-                 '"{}" MUST NOT start\'s with "{}"'.format(regexp, char))
+                 '{reg!r} MUST NOT start\'s with {chr!r}'.format(reg=regexp, chr=char))
 
     reg = Regexp(regexp, case_sensitive=False, strict=strict)
     char = char.upper()
     assert_false(reg.must_startswith(char),
-                 '"{}" (case insensitive) MUST NOT start\'s with "{}"'.format(regexp, char))
+                 '{reg!r} (case insensitive) MUST NOT start\'s with {chr!r}'.format(reg=regexp, chr=char))
+
 
 def check_generate(regexp, values):
     reg = Regexp(regexp)
