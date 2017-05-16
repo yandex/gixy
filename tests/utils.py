@@ -62,8 +62,3 @@ class Matcher(object):
         else:
             result = dv.find(v) >= 0
         return result
-
-
-class RawFormatter(BaseFormatter):
-    def format_reports(self, reports, stats):
-        return reports

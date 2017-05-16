@@ -4,7 +4,6 @@ import os
 from os import path
 import json
 
-import gixy
 from ..utils import *
 from gixy.core.manager import Manager as Gixy
 from gixy.core.plugins_manager import PluginsManager
@@ -83,7 +82,9 @@ def check_configuration(plugin, config_path, test_config):
     plugin_options = parse_plugin_options(config_path)
     with yoda_provider(plugin, plugin_options) as yoda:
         yoda.audit(config_path, open(config_path, mode='r'))
-        results = RawFormatter().format(yoda)
+        formatter = BaseFormatter()
+        formatter.feed(config_path, yoda)
+        _, results = formatter.reports.popitem()
 
         assert_equals(len(results), 1, 'Should have one report')
         result = results[0]
@@ -104,7 +105,5 @@ def check_configuration(plugin, config_path, test_config):
 def check_configuration_fp(plugin, config_path, test_config):
     with yoda_provider(plugin) as yoda:
         yoda.audit(config_path, open(config_path, mode='r'))
-        results = RawFormatter().format(yoda)
-
-        assert_equals(len(results), 0,
+        assert_equals(len([x for x in yoda.results]), 0,
                       'False positive configuration must not trigger any plugins')
