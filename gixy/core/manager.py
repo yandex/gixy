@@ -15,10 +15,6 @@ class Manager(object):
         self.root = None
         self.config = config or Config()
         self.auditor = PluginsManager(config=self.config)
-        self.stats = {gixy.severity.UNSPECIFIED: 0,
-                      gixy.severity.LOW: 0,
-                      gixy.severity.MEDIUM: 0,
-                      gixy.severity.HIGH: 0}
 
     def audit(self, file_path, file_data, is_stdin=False):
         LOG.debug("Audit config file: {fname}".format(fname=file_path))
@@ -30,11 +26,19 @@ class Manager(object):
         push_context(self.root)
         self._audit_recursive(self.root.children)
 
-    def get_results(self):
+    @property
+    def results(self):
         for plugin in self.auditor.plugins:
             if plugin.issues:
-                self.stats[plugin.severity] += len(plugin.issues)
                 yield plugin
+
+    @property
+    def stats(self):
+        stats = dict.fromkeys(gixy.severity.ALL, 0)
+        for plugin in self.auditor.plugins:
+            if plugin.issues:
+                stats[plugin.severity] += len(plugin.issues)
+        return stats
 
     def _audit_recursive(self, tree):
         for directive in tree:

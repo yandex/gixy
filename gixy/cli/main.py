@@ -35,7 +35,7 @@ def _create_plugin_help(option):
 
 def _get_cli_parser():
     parser = create_parser()
-    parser.add_argument('nginx_file', nargs='?', type=str, default='/etc/nginx/nginx.conf', metavar='nginx.conf',
+    parser.add_argument('nginx_files', nargs='*', type=str, default=['/etc/nginx/nginx.conf'], metavar='nginx.conf',
                         help='Path to nginx.conf, e.g. /etc/nginx/nginx.conf')
 
     parser.add_argument(
@@ -96,11 +96,12 @@ def main():
     args = parser.parse_args()
     _init_logger(args.debug)
 
-    path = os.path.expanduser(args.nginx_file)
-    if path != '-' and not os.path.exists(path):
-        sys.stderr.write('Please specify path to Nginx configuration.\n\n')
-        parser.print_help()
-        sys.exit(1)
+    if len(args.nginx_files) == 1 and args.nginx_files[0] != '-':
+        path = os.path.expanduser(args.nginx_files[0])
+        if not os.path.exists(path):
+            sys.stderr.write('File {path!r} was not found.\nPlease specify correct path to configuration.\n'.format(
+                path=path))
+            sys.exit(1)
 
     try:
         severity = gixy.severity.ALL[args.level]
@@ -148,22 +149,32 @@ def main():
             options[opt_key] = val
         config.set_for(name, options)
 
-    with Gixy(config=config) as yoda:
-        if path == '-':
-            with os.fdopen(sys.stdin.fileno(), 'rb') as fdata:
-                yoda.audit('<stdin>', fdata, is_stdin=True)
-        else:
-            with open(path, mode='rb') as fdata:
-                yoda.audit(path, fdata, is_stdin=False)
+    formatter = formatters()[config.output_format]()
+    failed = False
+    for input_path in args.nginx_files:
+        path = os.path.abspath(os.path.expanduser(input_path))
+        if not os.path.exists(path):
+            LOG.error('File %s was not found', path)
+            continue
 
-        formatted = formatters()[config.output_format]().format(yoda)
-        if args.output_file:
-            with open(config.output_file, 'w') as f:
-                f.write(formatted)
-        else:
-            print(formatted)
+        with Gixy(config=config) as yoda:
+            if path == '-':
+                with os.fdopen(sys.stdin.fileno(), 'rb') as fdata:
+                    yoda.audit('<stdin>', fdata, is_stdin=True)
+            else:
+                with open(path, mode='rb') as fdata:
+                    yoda.audit(path, fdata, is_stdin=False)
 
-        if sum(yoda.stats.values()) > 0:
-            # If something found - exit code must be 1, otherwise 0
-            sys.exit(1)
-        sys.exit(0)
+            formatter.feed(path, yoda)
+            failed = failed or sum(yoda.stats.values()) > 0
+
+    if args.output_file:
+        with open(config.output_file, 'w') as f:
+            f.write(formatter.flush())
+    else:
+        print(formatter.flush())
+
+    if failed:
+        # If something found - exit code must be 1, otherwise 0
+        sys.exit(1)
+    sys.exit(0)

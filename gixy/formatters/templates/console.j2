@@ -1,35 +1,43 @@
 {% set colors = {'DEF': '\033[0m', 'TITLE': '\033[95m', 'UNSPECIFIED': '\033[0m', 'LOW': '\033[94m', 'MEDIUM': '\033[93m', 'HIGH': '\033[91m'} %}
 
-{{ colors['TITLE'] }}==================== Results ==================={{ colors['DEF'] }}
+{{ colors.TITLE }}==================== Results ==================={{ colors.DEF }}
+{% for path, issues in reports.items() %}
+File path: {{ path }}
 {% if not issues %}
 No issues found.
+
 {% else %}
 
 {% for issue in issues|sort(attribute='severity') %}
-{{ colors[issue.severity] }}Problem: [{{ issue.plugin }}] {{ issue.summary }}
+{{ colors[issue.severity] }}>> Problem: [{{ issue.plugin }}] {{ issue.summary }}
 {% if issue.description %}
-Description: {{ issue.description }}
+   Description: {{ issue.description }}
 {% endif %}
 {% if issue.help_url %}
-Additional info: {{ issue.help_url }}
+   Additional info: {{ issue.help_url }}
 {% endif %}
 {% if issue.reason %}
-Reason: {{ issue.reason }}
+   Reason: {{ issue.reason }}
 {% endif %}
-{{ colors['DEF'] }}Pseudo config:{{ issue.config }}
+   Pseudo config:{{ colors.DEF }}
+{{ issue.config }}
 
+{% if not loop.last %}
+------------------------------------------------
+
+{% endif %}
+{% endfor %}
+{% endif %}
 {% if not loop.last %}
 --------8<--------8<--------8<--------8<--------
 
 {% endif %}
 {% endfor %}
-{% endif %}
-
 {% if stats %}
-{{ colors['TITLE'] }}==================== Summary ==================={{ colors['DEF'] }}
+{{ colors.TITLE }}==================== Summary ==================={{ colors.DEF }}
 Total issues:
-    Unspecified: {{ stats['UNSPECIFIED'] }}
-    Low: {{ stats['LOW'] }}
-    Medium: {{ stats['MEDIUM'] }}
-    High: {{ stats['HIGH'] }}
+    Unspecified: {{ stats.UNSPECIFIED }}
+    Low: {{ stats.LOW }}
+    Medium: {{ stats.MEDIUM }}
+    High: {{ stats.HIGH }}
 {% endif %}
