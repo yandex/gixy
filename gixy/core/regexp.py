@@ -1022,7 +1022,12 @@ class Regexp(object):
         if self._parsed:
             return self._parsed
 
-        self._parsed = sre_parse.parse(FIX_NAMED_GROUPS_RE.sub('(?P<\\1>', self.source))
+        try:
+            self._parsed = sre_parse.parse(FIX_NAMED_GROUPS_RE.sub('(?P<\\1>', self.source))
+        except sre_parse.error as e:
+            LOG.fatal('Failed to parse regex: %s (%s)', self.source, str(e))
+            raise e
+
         return self._parsed
 
     def __str__(self):
