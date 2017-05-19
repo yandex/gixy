@@ -110,14 +110,17 @@ class NginxParser(object):
 
     def _resolve_file_include(self, pattern, parent):
         path = os.path.join(self.cwd, pattern)
-        file_path = None
+        exists = False
         for file_path in glob.iglob(path):
+            if not os.path.exists(file_path):
+                continue
+            exists = True
             include = block.IncludeBlock('include', [file_path])
             parent.append(include)
             self.parse_file(file_path, include)
 
-        if not file_path:
-            LOG.warning("File not found: {0}".format(path))
+        if not exists:
+            LOG.warning('File not found: {0}'.format(path))
 
     def _resolve_dump_include(self, pattern, parent):
         path = os.path.join(self.cwd, pattern)
