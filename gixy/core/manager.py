@@ -36,8 +36,11 @@ class Manager(object):
     def stats(self):
         stats = dict.fromkeys(gixy.severity.ALL, 0)
         for plugin in self.auditor.plugins:
-            if plugin.issues:
-                stats[plugin.severity] += len(plugin.issues)
+            base_severity = plugin.severity
+            for issue in plugin.issues:
+                # TODO(buglloc): encapsulate into Issue class?
+                severity = issue.severity if issue.severity else base_severity
+                stats[severity] += 1
         return stats
 
     def _audit_recursive(self, tree):
