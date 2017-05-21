@@ -1,7 +1,9 @@
 
 ==================== Results ===================
 {% for path, issues in reports.items() %}
+{% if reports|length > 1 %}
 File path: {{ path }}
+{% endif %}
 {% if not issues %}
 No issues found.
 
