@@ -88,6 +88,35 @@ Total issues:
 
 Or something else, you can find all other `gixy` arguments with the help command: `gixy --help`
 
+## Docker usage
+
+Gixy is available as a Docker image [from the Docker hub](https://hub.docker.com/r/yandex/gixy/). To
+use it, mount the configuration that you want to analyse as a volume and provide the path to the
+configuration file when running the Gixy image.
+```
+$ docker run --rm -v `pwd`/nginx.conf:/etc/nginx/conf/nginx.conf yandex/gixy /etc/nginx/conf/nginx.conf
+```
+
+If you have an image that already contains your nginx configuration, you can share the configuration
+with the Gixy container as a volume.
+```
+$  docker run --rm --name nginx -d -v /etc/nginx
+nginx:alpinef68f2833e986ae69c0a5375f9980dc7a70684a6c233a9535c2a837189f14e905
+
+$  docker run --rm --volumes-from nginx yandex/gixy /etc/nginx/nginx.conf
+
+==================== Results ===================
+No issues found.
+
+==================== Summary ===================
+Total issues:
+    Unspecified: 0
+    Low: 0
+    Medium: 0
+    High: 0
+
+```
+
 # Contributing
 Contributions to Gixy are always welcome! You can help us in different ways:
   * Open an issue with suggestions for improvements and errors you're facing;
