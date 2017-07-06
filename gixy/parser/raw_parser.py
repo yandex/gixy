@@ -74,7 +74,7 @@ class RawParser(object):
             (if_modifier + Optional(space) + value) |
             (variable + Optional(space + if_modifier + Optional(space) + value))
         )
-        condition = Regex(r'\((?:[^();\n\r\\]|(?:\(.*\))|(?:\\.))+?\)')\
+        condition = Regex(r'\((?:[^()\n\r\\]|(?:\(.*\))|(?:\\.))+?\)')\
             .setParseAction(lambda s, l, t: condition_body.parseString(t[0][1:-1]))
 
         # rules
