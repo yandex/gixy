@@ -17,7 +17,7 @@
 
 Пример плохой конфигурации:
 ```nginx
-if ($http_origin ~* ((^https://www\.yandex\.ru)|(^https://ya\.ru)/)) {
+if ($http_origin ~* ((^https://www\.yandex\.ru)|(^https://ya\.ru)$)) {
 	add_header 'Access-Control-Allow-Origin' "$http_origin";
 	add_header 'Access-Control-Allow-Credentials' 'true';
 }

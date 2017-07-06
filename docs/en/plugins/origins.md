@@ -17,7 +17,7 @@ The most common errors with this configuration are:
 
 Misconfiguration example:
 ```nginx
-if ($http_origin ~* ((^https://www\.yandex\.ru)|(^https://ya\.ru)/)) {
+if ($http_origin ~* ((^https://www\.yandex\.ru)|(^https://ya\.ru)$)) {
 	add_header 'Access-Control-Allow-Origin' "$http_origin";
 	add_header 'Access-Control-Allow-Credentials' 'true';
 }
