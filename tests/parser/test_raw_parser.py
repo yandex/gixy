@@ -232,6 +232,9 @@ if ($host ~* (lori|rage2)\.yandex\.(ru|ua|com|com\.tr)) {
 if ($request_filename ~* ^.*?/(\d+_)([^/]+)$) {
 }
 
+if ($http_user_agent ~* "^WordPress.*; verifying pingback") {
+}
+
 if ($foo = "BAR") { rewrite ^(.*)$ /bar; }
         '''
 
@@ -261,6 +264,8 @@ if ($foo = "BAR") { rewrite ^(.*)$ /bar; }
             ['set', '$x_frame_options', 'ALLOW']
         ]],
         ['if', ['$request_filename', '~*', '^.*?/(\d+_)([^/]+)$'], [
+        ]],
+        ['if', ['$http_user_agent', '~*', '^WordPress.*; verifying pingback'], [
         ]],
         ['if', ['$foo', '=', 'BAR'], [
             ['rewrite', '^(.*)$', '/bar']
