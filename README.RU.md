@@ -24,6 +24,7 @@ Gixy — это утилита для анализа конфигурации Ng
   * [[host_spoofing] Подделка заголовка запроса Host](https://github.com/yandex/gixy/blob/master/docs/ru/plugins/hostspoofing.md)
   * [[valid_referers] none in valid_referers](https://github.com/yandex/gixy/blob/master/docs/ru/plugins/validreferers.md)
   * [[add_header_multiline] Многострочные заголовоки ответа](https://github.com/yandex/gixy/blob/master/docs/ru/plugins/addheadermultiline.md)
+  * [[alias_traversal] Path traversal при использовании alias](https://github.com/yandex/gixy/blob/master/docs/ru/plugins/aliastraversal.md)
 
 Проблемы, которым Gixy только учится можно найти в [Issues с меткой "new plugin"](https://github.com/yandex/gixy/issues?q=is%3Aissue+is%3Aopen+label%3A%22new+plugin%22)
 
