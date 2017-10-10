@@ -1,6 +1,6 @@
 # [alias_traversal] Path traversal via misconfigured alias
 
-The [alias](https://nginx.ru/ru/docs/http/ngx_http_core_module.html#alias) directive is used to replace path of the specified location.
+The [alias](https://nginx.ru/en/docs/http/ngx_http_core_module.html#alias) directive is used to replace path of the specified location.
 For example, with the following configuration:
 ```nginx
 location /i/ {
