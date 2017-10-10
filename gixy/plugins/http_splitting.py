@@ -29,7 +29,7 @@ class http_splitting(Plugin):
             return
 
         for var in compile_script(value):
-            if not var.can_contain('\n'):
+            if not var.can_contain('\n') and not var.can_contain('\r'):
                 continue
             reason = 'At least variable "${var}" can contain "\\n"'.format(var=var.name)
             self.add_issue(directive=[directive] + var.providers, reason=reason)

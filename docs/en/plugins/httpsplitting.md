@@ -2,7 +2,7 @@
 
 HTTP Splitting - attack that use improper input validation. It usually targets web application located behind Nginx (HTTP Request Splitting) or its users (HTTP Response Splitting).
 
-Vulnerability is created when an attacker can insert newline character `\n` into request or into response, created by Nginx.
+Vulnerability is created when an attacker can insert newline character `\n` or `\r` into request or into response, created by Nginx.
 
 ## How can I find it?
 You should always pay attention to:
