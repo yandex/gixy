@@ -9,6 +9,8 @@ from gixy.formatters import get_all as formatters
 from gixy.core.plugins_manager import PluginsManager
 from gixy.core.config import Config
 from gixy.cli.argparser import create_parser
+from gixy.core.exceptions import InvalidConfiguration
+
 
 LOG = logging.getLogger()
 
@@ -158,13 +160,15 @@ def main():
             continue
 
         with Gixy(config=config) as yoda:
-            if path == '-':
-                with os.fdopen(sys.stdin.fileno(), 'rb') as fdata:
-                    yoda.audit('<stdin>', fdata, is_stdin=True)
-            else:
-                with open(path, mode='rb') as fdata:
-                    yoda.audit(path, fdata, is_stdin=False)
-
+            try:
+                if path == '-':
+                    with os.fdopen(sys.stdin.fileno(), 'rb') as fdata:
+                        yoda.audit('<stdin>', fdata, is_stdin=True)
+                else:
+                    with open(path, mode='rb') as fdata:
+                        yoda.audit(path, fdata, is_stdin=False)
+            except InvalidConfiguration:
+                failed = True
             formatter.feed(path, yoda)
             failed = failed or sum(yoda.stats.values()) > 0
 

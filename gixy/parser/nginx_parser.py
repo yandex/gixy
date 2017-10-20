@@ -4,7 +4,7 @@ import logging
 import fnmatch
 
 from pyparsing import ParseException
-
+from gixy.core.exceptions import InvalidConfiguration
 from gixy.parser import raw_parser
 from gixy.directives import block, directive
 
@@ -29,7 +29,6 @@ class NginxParser(object):
     def parse(self, content, root=None, path_info=None):
         if not root:
             root = block.Root()
-
         try:
             parsed = self.parser.parse(content)
         except ParseException as e:
@@ -38,7 +37,7 @@ class NginxParser(object):
                 LOG.error('Failed to parse config "{file}": {error}'.format(file=path_info, error=error_msg))
             else:
                 LOG.error('Failed to parse config: {error}'.format(error=error_msg))
-            return root
+            raise InvalidConfiguration(error_msg)
 
         if len(parsed) and parsed[0].getName() == 'file_delimiter':
             #  Were parse nginx dump
