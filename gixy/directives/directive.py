@@ -131,3 +131,11 @@ class RootDirective(Directive):
     @property
     def variables(self):
         return [Variable(name='document_root', value=self.path, provider=self)]
+
+
+class AliasDirective(Directive):
+    nginx_name = 'alias'
+
+    def __init__(self, name, args):
+        super(AliasDirective, self).__init__(name, args)
+        self.path = args[0]
