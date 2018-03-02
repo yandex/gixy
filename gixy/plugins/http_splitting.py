@@ -28,11 +28,12 @@ class http_splitting(Plugin):
         if not value:
             return
 
+        server_side = directive.name.startswith('proxy_')
         for var in compile_script(value):
             char = ''
             if var.can_contain('\n'):
                 char = '\\n'
-            elif var.can_contain('\r'):
+            elif not server_side and var.can_contain('\r'):
                 char = '\\r'
             else:
                 continue
