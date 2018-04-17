@@ -203,3 +203,19 @@ def test_block_find_not_flat():
     assert_equals(len(finds), 1)
     assert_equals([x.name for x in finds], ['directive'])
     assert_equals([x.args[0] for x in finds], ['1'])
+
+
+def test_block_map():
+    config = '''
+map $some_var $some_other_var {
+    a   b;
+    default c;
+}
+    '''
+
+    directive = _get_parsed(config)
+    assert_is_instance(directive, MapBlock)
+    assert_true(directive.is_block)
+    assert_false(directive.self_context)
+    assert_true(directive.provide_variables)
+    assert_equals(directive.variable, 'some_other_var')
