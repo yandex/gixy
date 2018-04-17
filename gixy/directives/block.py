@@ -173,3 +173,25 @@ class MapBlock(Block):
     def variables(self):
         # TODO(buglloc): Finish him!
         return [Variable(name=self.variable, value='', boundary=None, provider=self, have_script=False)]
+
+
+class GeoBlock(Block):
+    nginx_name = 'geo'
+    self_context = False
+    provide_variables = True
+
+    def __init__(self, name, args):
+        super(GeoBlock, self).__init__(name, args)
+        if len(args) == 1:  # geo uses $remote_addr as default source of the value
+            source = '$remote_addr'
+            variable = args[0].strip('$')
+        else:
+            source = args[0]
+            variable = args[1].strip('$')
+        self.source = source
+        self.variable = variable
+
+    @cached_property
+    def variables(self):
+        # TODO(buglloc): Finish him! -- same as in MapBlock
+        return [Variable(name=self.variable, value='', boundary=None, provider=self, have_script=False)]
