@@ -219,3 +219,35 @@ map $some_var $some_other_var {
     assert_false(directive.self_context)
     assert_true(directive.provide_variables)
     assert_equals(directive.variable, 'some_other_var')
+
+
+def test_block_geo_two_vars():
+    config = '''
+geo $some_var $some_other_var {
+    1.2.3.4 b;
+    default c;
+}
+    '''
+
+    directive = _get_parsed(config)
+    assert_is_instance(directive, GeoBlock)
+    assert_true(directive.is_block)
+    assert_false(directive.self_context)
+    assert_true(directive.provide_variables)
+    assert_equals(directive.variable, 'some_other_var')
+
+
+def test_block_geo_one_var():
+    config = '''
+geo $some_var {
+    5.6.7.8 d;
+    default e;
+}
+    '''
+
+    directive = _get_parsed(config)
+    assert_is_instance(directive, GeoBlock)
+    assert_true(directive.is_block)
+    assert_false(directive.self_context)
+    assert_true(directive.provide_variables)
+    assert_equals(directive.variable, 'some_var')
