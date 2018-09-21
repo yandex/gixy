@@ -76,7 +76,7 @@ class NginxParser(object):
             self.parse_block(children, inst)
             return inst
         else:
-            args = [str(v).strip() for v in parsed_args]
+            args = [str(v.encode("utf-8")).strip() for v in parsed_args]
             return klass(parsed_name, args)
 
     def _get_directive_class(self, parsed_type, parsed_name):
