@@ -488,6 +488,11 @@ add_header X-Padding-Comment padding;
 
 #
 add_header X-Blank-Comment blank;
+
+if (1) # Comment 
+{
+    add_header X-Inline blank;
+}
         '''
 
     expected = [
@@ -499,6 +504,9 @@ add_header X-Blank-Comment blank;
         ['add_header', 'X-Padding-Comment', 'padding'],
         [''],
         ['add_header', 'X-Blank-Comment', 'blank'],
+        ['if', ['1'], [
+            ['add_header', 'X-Inline', 'blank'],
+        ]],
     ]
 
     assert_config(config, expected)
