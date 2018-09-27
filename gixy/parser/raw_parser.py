@@ -126,6 +126,7 @@ class RawParser(object):
         if_block << (
             Keyword("if") +
             Group(condition) +
+            Suppress(Optional(comment)) +
             Group(
                 left_bracket +
                 Optional(sub_block) +
@@ -137,6 +138,7 @@ class RawParser(object):
             Group(
                 Optional(space + location_modifier) +
                 Optional(space) + value) +
+            Suppress(Optional(comment)) +
             Group(
                 left_bracket +
                 Optional(sub_block) +
@@ -155,6 +157,7 @@ class RawParser(object):
         generic_block << (
             keyword +
             Group(ZeroOrMore(space + value)) +
+            Suppress(Optional(comment)) +
             Group(
                 left_bracket +
                 Optional(sub_block) +
