@@ -99,6 +99,15 @@ server {
     assert_equal(listen.args, ['80'])
 
 
+def test_encoding():
+    configs = [
+        'bar "\xD1\x82\xD0\xB5\xD1\x81\xD1\x82";'
+    ]
+
+    for i, config in enumerate(configs):
+        _parse(config)
+
+
 def assert_config(config, expected):
     tree = _parse(config)
     assert_is_instance(tree, Directive)

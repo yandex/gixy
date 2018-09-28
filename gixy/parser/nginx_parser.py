@@ -7,6 +7,7 @@ from pyparsing import ParseException
 from gixy.core.exceptions import InvalidConfiguration
 from gixy.parser import raw_parser
 from gixy.directives import block, directive
+from gixy.utils.text import to_native
 
 LOG = logging.getLogger(__name__)
 
@@ -69,14 +70,14 @@ class NginxParser(object):
             return None
 
         if klass.is_block:
-            args = [str(v).strip() for v in parsed_args[0]]
+            args = [to_native(v).strip() for v in parsed_args[0]]
             children = parsed_args[1]
 
             inst = klass(parsed_name, args)
             self.parse_block(children, inst)
             return inst
         else:
-            args = [str(v).strip() for v in parsed_args]
+            args = [to_native(v).strip() for v in parsed_args]
             return klass(parsed_name, args)
 
     def _get_directive_class(self, parsed_type, parsed_name):
