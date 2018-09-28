@@ -22,7 +22,7 @@ Additional info: {{ issue.help_url }}
 Reason: {{ issue.reason }}
 {% endif %}
 Pseudo config:
-{{ issue.config }}
+{{ issue.config | to_text }}
 
 {% if not loop.last %}
 ------------------------------------------------
