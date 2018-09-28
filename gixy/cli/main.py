@@ -11,7 +11,6 @@ from gixy.core.config import Config
 from gixy.cli.argparser import create_parser
 from gixy.core.exceptions import InvalidConfiguration
 
-
 LOG = logging.getLogger()
 
 
