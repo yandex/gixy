@@ -111,7 +111,7 @@ class LocationBlock(Block):
 
     @cached_property
     def variables(self):
-        if not self.modifier or self.modifier not in ('~', '~*'):
+        if not self.modifier or self.modifier not in ('~', '~*', '^~'):
             return []
 
         regexp = Regexp(self.path, case_sensitive=self.modifier == '~')
@@ -124,6 +124,7 @@ class LocationBlock(Block):
 class IfBlock(Block):
     nginx_name = 'if'
     self_context = False
+    provide_variables = True
 
     def __init__(self, name, args):
         super(IfBlock, self).__init__(name, args)
@@ -142,6 +143,17 @@ class IfBlock(Block):
             self.variable, self.operand, self.value = args
         else:
             raise Exception('Unknown "if" definition, args: {0!r}'.format(args))
+
+    @cached_property
+    def variables(self):
+        if self.operand != '~':
+            return []
+
+        regexp = Regexp(self.value, case_sensitive=self.operand == '~')
+        result = []
+        for name, group in regexp.groups.items():
+            result.append(Variable(name=name, value=group, boundary=None, provider=self))
+        return result
 
     def __str__(self):
         return '{name} ({args}) {{'.format(name=self.name, args=' '.join(self.args))
