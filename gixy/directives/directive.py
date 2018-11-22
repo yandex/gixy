@@ -115,7 +115,7 @@ class SetByLuaDirective(Directive):
 class RewriteDirective(Directive):
     nginx_name = 'rewrite'
     provide_variables = True
-    boundary = Regexp('[^\s\r\n]')
+    boundary = Regexp(r'[^\s\r\n]')
 
     def __init__(self, name, args):
         super(RewriteDirective, self).__init__(name, args)
