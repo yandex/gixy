@@ -4,7 +4,7 @@ from gixy.core.variable import compile_script
 
 
 class http_splitting(Plugin):
-    """
+    r"""
     Insecure examples:
         rewrite ^ http://$host$uri;
         return 301 http://$host$uri;

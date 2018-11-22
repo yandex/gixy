@@ -3,19 +3,19 @@ from gixy.core.variable import Variable
 
 BUILTIN_VARIABLES = {
     # http://nginx.org/en/docs/http/ngx_http_core_module.html#var_uri
-    'uri': '/[^\x20\t]*',
+    'uri': r'/[^\x20\t]*',
     # http://nginx.org/en/docs/http/ngx_http_core_module.html#var_document_uri
-    'document_uri': '/[^\x20\t]*',
+    'document_uri': r'/[^\x20\t]*',
     # http://nginx.org/en/docs/http/ngx_http_core_module.html#var_arg_
-    'arg_': '[^\s&]+',
+    'arg_': r'[^\s&]+',
     # http://nginx.org/en/docs/http/ngx_http_core_module.html#var_args
-    'args': '[^\s]+',
+    'args': r'[^\s]+',
     # http://nginx.org/en/docs/http/ngx_http_core_module.html#var_query_string
-    'query_string': '[^\s]+',
+    'query_string': r'[^\s]+',
     # http://nginx.org/en/docs/http/ngx_http_core_module.html#var_request_uri
-    'request_uri': '/[^\s]*',
+    'request_uri': r'/[^\s]*',
     # http://nginx.org/en/docs/http/ngx_http_core_module.html#var_http_
-    'http_': '[\x21-\x7e]',
+    'http_': r'[\x21-\x7e]',
 
     # http://nginx.org/en/docs/http/ngx_http_upstream_module.html#var_upstream_http_
     'upstream_http_': '',
