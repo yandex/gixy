@@ -23,3 +23,4 @@ In other words, the incorrect configuration of `alias` could allow an attacker t
 It's pretty simple:
   - you must find all the `alias` directives;
   - make sure that the parent prefixed location ends with directory separator.
+  - or if you want to map a signle file make sure the location starts with a `=`, e.g `=/i.gif` instead of `/i.gif`.
