@@ -30,6 +30,14 @@ Right now Gixy can find:
 You can find things that Gixy is learning to detect at [Issues labeled with "new plugin"](https://github.com/yandex/gixy/issues?q=is%3Aissue+is%3Aopen+label%3A%22new+plugin%22)
 
 # Installation
+
+## RHEL/CentOS 7
+
+    yum install https://extras.getpagespeed.com/release-el7-latest.rpm
+    yum install gixy
+    
+## Other systems    
+
 Gixy is distributed on [PyPI](https://pypi.python.org/pypi/gixy). The best way to install it is with pip:
 ```bash
 pip install gixy
