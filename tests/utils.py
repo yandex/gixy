@@ -1,5 +1,4 @@
 from logging.handlers import BufferingHandler
-from gixy.formatters.base import BaseFormatter
 
 
 class LogHandler(BufferingHandler):
