@@ -1,9 +1,9 @@
-FROM python:2.7-alpine
+FROM python:alpine
 
 ADD . /src
 
 WORKDIR /src
 
-RUN python2 setup.py install
+RUN python3 setup.py install
 
 ENTRYPOINT ["gixy"]
