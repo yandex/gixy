@@ -16,7 +16,7 @@ By adopting the CLA, you state the following:
 * We may use your contributions for our open source projects and for any other our project too,
 * We rely on your assurances concerning the rights of third parties in relation to your contributes.
 
-If you agree with these principles, please read and adopt our CLA. By providing us your contributions, you hereby declare that you has already read and adopt our CLA, and we may freely merge your contributions with our corresponding open source project and use it in futher in accordance with terms and conditions of the CLA.
+If you agree with these principles, please read and adopt our CLA. By providing us your contributions, you hereby declare that you has already read and adopt our CLA, and we may freely merge your contributions with our corresponding open source project and use it in further in accordance with terms and conditions of the CLA.
 
 ## Provide contributions 
 
