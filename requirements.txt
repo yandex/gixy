@@ -1,4 +1,4 @@
-pyparsing==2.4.7
+pyparsing>1.5,<3
 cached-property>=1.2.0
 argparse>=1.4.0
 six>=1.1.0
