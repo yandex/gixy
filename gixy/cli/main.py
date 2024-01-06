@@ -97,12 +97,26 @@ def main():
     args = parser.parse_args()
     _init_logger(args.debug)
 
-    if len(args.nginx_files) == 1 and args.nginx_files[0] != '-':
-        path = os.path.expanduser(args.nginx_files[0])
-        if not os.path.exists(path):
-            sys.stderr.write('File {path!r} was not found.\nPlease specify correct path to configuration.\n'.format(
-                path=path))
-            sys.exit(1)
+    # generate a list of user-expanded absolute paths from the nginx_files input arguments
+    nginx_files = []
+
+    for input_path in args.nginx_files:
+        if input_path == '-':
+            if len(args.nginx_files) > 1:
+                sys.stderr.write('Expected either file paths or stdin, got both.\n')
+                sys.exit(1)
+
+            nginx_files.append('-')
+        else:
+            path = os.path.expanduser(os.path.abspath(input_path))
+
+            if not os.path.exists(path):
+                sys.stderr.write(
+                    'File {path!r} was not found.\nPlease specify correct path to configuration.\n'.format(path=path)
+                )
+                sys.exit(1)
+
+            nginx_files.append(path)
 
     try:
         severity = gixy.severity.ALL[args.level]
@@ -152,12 +166,7 @@ def main():
 
     formatter = formatters()[config.output_format]()
     failed = False
-    for input_path in args.nginx_files:
-        path = os.path.abspath(os.path.expanduser(input_path))
-        if not os.path.exists(path):
-            LOG.error('File %s was not found', path)
-            continue
-
+    for path in nginx_files:
         with Gixy(config=config) as yoda:
             try:
                 if path == '-':
