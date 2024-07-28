@@ -1,5 +1,3 @@
-from nose.tools import assert_equals, assert_true, assert_false
-from tests.asserts import assert_is_instance, assert_is_none, assert_is_not_none
 from gixy.parser.nginx_parser import NginxParser
 from gixy.directives.block import *
 
@@ -15,10 +13,10 @@ def test_block():
     config = 'some {some;}'
 
     directive = _get_parsed(config)
-    assert_is_instance(directive, Block)
-    assert_true(directive.is_block)
-    assert_true(directive.self_context)
-    assert_false(directive.provide_variables)
+    assert isinstance(directive, Block)
+    assert directive.is_block
+    assert directive.self_context
+    assert not directive.provide_variables
 
 
 def test_http():
@@ -31,10 +29,10 @@ http {
     '''
 
     directive = _get_parsed(config)
-    assert_is_instance(directive, HttpBlock)
-    assert_true(directive.is_block)
-    assert_true(directive.self_context)
-    assert_false(directive.provide_variables)
+    assert isinstance(directive, HttpBlock)
+    assert directive.is_block
+    assert directive.self_context
+    assert not directive.provide_variables
 
 
 def test_server():
@@ -48,11 +46,11 @@ server {
     '''
 
     directive = _get_parsed(config)
-    assert_is_instance(directive, ServerBlock)
-    assert_true(directive.is_block)
-    assert_true(directive.self_context)
-    assert_equals([d.args[0] for d in directive.get_names()], ['_', 'cool.io'])
-    assert_false(directive.provide_variables)
+    assert isinstance(directive, ServerBlock)
+    assert directive.is_block
+    assert directive.self_context
+    assert [d.args[0] for d in directive.get_names()] == ['_', 'cool.io']
+    assert not directive.provide_variables
 
 
 def test_location():
@@ -62,13 +60,13 @@ location / {
     '''
 
     directive = _get_parsed(config)
-    assert_is_instance(directive, LocationBlock)
-    assert_true(directive.is_block)
-    assert_true(directive.self_context)
-    assert_true(directive.provide_variables)
-    assert_is_none(directive.modifier)
-    assert_equals(directive.path, '/')
-    assert_false(directive.is_internal)
+    assert isinstance(directive, LocationBlock)
+    assert directive.is_block
+    assert directive.self_context
+    assert directive.provide_variables
+    assert directive.modifier is None
+    assert directive.path == '/'
+    assert not directive.is_internal
 
 
 def test_location_internal():
@@ -79,8 +77,8 @@ location / {
     '''
 
     directive = _get_parsed(config)
-    assert_is_instance(directive, LocationBlock)
-    assert_true(directive.is_internal)
+    assert isinstance(directive, LocationBlock)
+    assert directive.is_internal
 
 
 def test_location_modifier():
@@ -90,9 +88,9 @@ location = / {
     '''
 
     directive = _get_parsed(config)
-    assert_is_instance(directive, LocationBlock)
-    assert_equals(directive.modifier, '=')
-    assert_equals(directive.path, '/')
+    assert isinstance(directive, LocationBlock)
+    assert directive.modifier == '='
+    assert directive.path == '/'
 
 
 def test_if():
@@ -102,13 +100,13 @@ if ($some) {
     '''
 
     directive = _get_parsed(config)
-    assert_is_instance(directive, IfBlock)
-    assert_true(directive.is_block)
-    assert_false(directive.self_context)
-    assert_false(directive.provide_variables)
-    assert_equals(directive.variable, '$some')
-    assert_is_none(directive.operand)
-    assert_is_none(directive.value)
+    assert isinstance(directive, IfBlock)
+    assert directive.is_block
+    assert not directive.self_context
+    assert not directive.provide_variables
+    assert directive.variable == '$some'
+    assert directive.operand is None
+    assert directive.value is None
 
 
 def test_if_modifier():
@@ -118,10 +116,10 @@ if (-f /some) {
     '''
 
     directive = _get_parsed(config)
-    assert_is_instance(directive, IfBlock)
-    assert_equals(directive.operand, '-f')
-    assert_equals(directive.value, '/some')
-    assert_is_none(directive.variable)
+    assert isinstance(directive, IfBlock)
+    assert directive.operand == '-f'
+    assert directive.value == '/some'
+    assert directive.variable is None
 
 
 def test_if_variable():
@@ -131,10 +129,10 @@ if ($http_some = '/some') {
     '''
 
     directive = _get_parsed(config)
-    assert_is_instance(directive, IfBlock)
-    assert_equals(directive.variable, '$http_some')
-    assert_equals(directive.operand, '=')
-    assert_equals(directive.value, '/some')
+    assert isinstance(directive, IfBlock)
+    assert directive.variable == '$http_some'
+    assert directive.operand == '='
+    assert directive.value == '/some'
 
 
 def test_block_some_flat():
@@ -151,8 +149,8 @@ def test_block_some_flat():
     directive = _get_parsed(config)
     for d in ['default_type', 'sendfile', 'keepalive_timeout']:
         c = directive.some(d, flat=True)
-        assert_is_not_none(c)
-        assert_equals(c.name, d)
+        assert c is not None
+        assert c.name == d
 
 
 def test_block_some_not_flat():
@@ -168,7 +166,7 @@ def test_block_some_not_flat():
 
     directive = _get_parsed(config)
     c = directive.some('keepalive_timeout', flat=False)
-    assert_is_none(c)
+    assert c is None
 
 
 def test_block_find_flat():
@@ -183,9 +181,9 @@ def test_block_find_flat():
 
     directive = _get_parsed(config)
     finds = directive.find('directive', flat=True)
-    assert_equals(len(finds), 2)
-    assert_equals([x.name for x in finds], ['directive', 'directive'])
-    assert_equals([x.args[0] for x in finds], ['1', '2'])
+    assert len(finds) == 2
+    assert [x.name for x in finds] == ['directive', 'directive']
+    assert [x.args[0] for x in finds] == ['1', '2']
 
 
 def test_block_find_not_flat():
@@ -200,9 +198,9 @@ def test_block_find_not_flat():
 
     directive = _get_parsed(config)
     finds = directive.find('directive', flat=False)
-    assert_equals(len(finds), 1)
-    assert_equals([x.name for x in finds], ['directive'])
-    assert_equals([x.args[0] for x in finds], ['1'])
+    assert len(finds) == 1
+    assert [x.name for x in finds] == ['directive']
+    assert [x.args[0] for x in finds] == ['1']
 
 
 def test_block_map():
@@ -214,11 +212,11 @@ map $some_var $some_other_var {
     '''
 
     directive = _get_parsed(config)
-    assert_is_instance(directive, MapBlock)
-    assert_true(directive.is_block)
-    assert_false(directive.self_context)
-    assert_true(directive.provide_variables)
-    assert_equals(directive.variable, 'some_other_var')
+    assert isinstance(directive, MapBlock)
+    assert directive.is_block
+    assert not directive.self_context
+    assert directive.provide_variables
+    assert directive.variable == 'some_other_var'
 
 
 def test_block_geo_two_vars():
@@ -230,11 +228,11 @@ geo $some_var $some_other_var {
     '''
 
     directive = _get_parsed(config)
-    assert_is_instance(directive, GeoBlock)
-    assert_true(directive.is_block)
-    assert_false(directive.self_context)
-    assert_true(directive.provide_variables)
-    assert_equals(directive.variable, 'some_other_var')
+    assert isinstance(directive, GeoBlock)
+    assert directive.is_block
+    assert not directive.self_context
+    assert directive.provide_variables
+    assert directive.variable == 'some_other_var'
 
 
 def test_block_geo_one_var():
@@ -246,8 +244,8 @@ geo $some_var {
     '''
 
     directive = _get_parsed(config)
-    assert_is_instance(directive, GeoBlock)
-    assert_true(directive.is_block)
-    assert_false(directive.self_context)
-    assert_true(directive.provide_variables)
-    assert_equals(directive.variable, 'some_var')
+    assert isinstance(directive, GeoBlock)
+    assert directive.is_block
+    assert not directive.self_context
+    assert directive.provide_variables
+    assert directive.variable == 'some_var'

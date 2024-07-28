@@ -1,4 +1,3 @@
-from nose.tools import assert_equals
 from gixy.parser.raw_parser import *
 
 
@@ -556,9 +555,9 @@ add_header X-Test "Windows-1251";
         '''
 
     actual = RawParser().parse(config)
-    assert_equals(len(actual.asList()), 2)
+    assert len(actual.asList()) == 2
 
 
 def assert_config(config, expected):
     actual = RawParser().parse(config)
-    assert_equals(actual.asList(), expected)
+    assert actual.asList() == expected

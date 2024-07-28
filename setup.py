@@ -27,7 +27,6 @@ setup(
     entry_points={
         'console_scripts': ['gixy=gixy.cli.main:main'],
     },
-    test_suite='nose.collector',
     packages=find_packages(exclude=['tests', 'tests.*']),
     classifiers=[
         'Development Status :: 3 - Alpha',
