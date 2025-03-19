@@ -14,11 +14,14 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildArch:      noarch
 
-BuildRequires:  python-devel python-setuptools
+BuildRequires:  python-devel
+BuildRequires:  python-setuptools
 
-Requires:       python-setuptools python-six >= 1.1.0 python-jinja >= 2.8
-Requires:       python2-cached_property >= 1.2.0 python2-configargparse >= 0.11.0
-Requires:       python-argparse >= 1.4.0 pyparsing >= 1.5.5 python-markupsafe
+Requires:       python-setuptools
+Requires:       python-jinja >= 3.1.5
+Requires:       python-cached_property >= 2.0.1
+Requires:       python2-configargparse >= 1.7
+Requires:       pyparsing >= 3.2.1
 
 Provides:       %{name} = %{verion}-%{release}
 

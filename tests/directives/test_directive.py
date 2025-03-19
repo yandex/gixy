@@ -1,7 +1,7 @@
-from nose.tools import assert_equals, assert_false, assert_true
+from nose.tools import assert_equal, assert_false, assert_true
 from tests.asserts import assert_is_instance
 from gixy.parser.nginx_parser import NginxParser
-from gixy.directives.directive import *
+from gixy.directives.directive import Directive, AddHeaderDirective, SetDirective, RewriteDirective, RootDirective
 
 
 def _get_parsed(config):
@@ -14,9 +14,9 @@ def test_directive():
 
     directive = _get_parsed(config)
     assert_is_instance(directive, Directive)
-    assert_equals(directive.name, 'some')
-    assert_equals(directive.args, ['foo', 'bar'])
-    assert_equals(str(directive), 'some foo bar;')
+    assert_equal(directive.name, 'some')
+    assert_equal(directive.args, ['foo', 'bar'])
+    assert_equal(str(directive), 'some foo bar;')
 
 
 def test_add_header():
@@ -24,12 +24,12 @@ def test_add_header():
 
     directive = _get_parsed(config)
     assert_is_instance(directive, AddHeaderDirective)
-    assert_equals(directive.name, 'add_header')
-    assert_equals(directive.args, ['X-Foo', 'bar'])
-    assert_equals(directive.header, 'x-foo')
-    assert_equals(directive.value, 'bar')
+    assert_equal(directive.name, 'add_header')
+    assert_equal(directive.args, ['X-Foo', 'bar'])
+    assert_equal(directive.header, 'x-foo')
+    assert_equal(directive.value, 'bar')
     assert_false(directive.always)
-    assert_equals(str(directive), 'add_header X-Foo bar;')
+    assert_equal(str(directive), 'add_header X-Foo bar;')
 
 
 def test_add_header_always():
@@ -37,12 +37,12 @@ def test_add_header_always():
 
     directive = _get_parsed(config)
     assert_is_instance(directive, AddHeaderDirective)
-    assert_equals(directive.name, 'add_header')
-    assert_equals(directive.args, ['X-Foo', 'bar', 'always'])
-    assert_equals(directive.header, 'x-foo')
-    assert_equals(directive.value, 'bar')
+    assert_equal(directive.name, 'add_header')
+    assert_equal(directive.args, ['X-Foo', 'bar', 'always'])
+    assert_equal(directive.header, 'x-foo')
+    assert_equal(directive.value, 'bar')
     assert_true(directive.always)
-    assert_equals(str(directive), 'add_header X-Foo bar always;')
+    assert_equal(str(directive), 'add_header X-Foo bar always;')
 
 
 def test_set():
@@ -50,11 +50,11 @@ def test_set():
 
     directive = _get_parsed(config)
     assert_is_instance(directive, SetDirective)
-    assert_equals(directive.name, 'set')
-    assert_equals(directive.args, ['$foo', 'bar'])
-    assert_equals(directive.variable, 'foo')
-    assert_equals(directive.value, 'bar')
-    assert_equals(str(directive), 'set $foo bar;')
+    assert_equal(directive.name, 'set')
+    assert_equal(directive.args, ['$foo', 'bar'])
+    assert_equal(directive.variable, 'foo')
+    assert_equal(directive.value, 'bar')
+    assert_equal(str(directive), 'set $foo bar;')
     assert_true(directive.provide_variables)
 
 
@@ -63,14 +63,14 @@ def test_rewrite():
 
     directive = _get_parsed(config)
     assert_is_instance(directive, RewriteDirective)
-    assert_equals(directive.name, 'rewrite')
-    assert_equals(directive.args, ['^', 'http://some'])
-    assert_equals(str(directive), 'rewrite ^ http://some;')
+    assert_equal(directive.name, 'rewrite')
+    assert_equal(directive.args, ['^', 'http://some'])
+    assert_equal(str(directive), 'rewrite ^ http://some;')
     assert_true(directive.provide_variables)
 
-    assert_equals(directive.pattern, '^')
-    assert_equals(directive.replace, 'http://some')
-    assert_equals(directive.flag, None)
+    assert_equal(directive.pattern, '^')
+    assert_equal(directive.replace, 'http://some')
+    assert_equal(directive.flag, None)
 
 
 def test_rewrite_flags():
@@ -78,14 +78,14 @@ def test_rewrite_flags():
 
     directive = _get_parsed(config)
     assert_is_instance(directive, RewriteDirective)
-    assert_equals(directive.name, 'rewrite')
-    assert_equals(directive.args, ['^/(.*)$', 'http://some/$1', 'redirect'])
-    assert_equals(str(directive), 'rewrite ^/(.*)$ http://some/$1 redirect;')
+    assert_equal(directive.name, 'rewrite')
+    assert_equal(directive.args, ['^/(.*)$', 'http://some/$1', 'redirect'])
+    assert_equal(str(directive), 'rewrite ^/(.*)$ http://some/$1 redirect;')
     assert_true(directive.provide_variables)
 
-    assert_equals(directive.pattern, '^/(.*)$')
-    assert_equals(directive.replace, 'http://some/$1')
-    assert_equals(directive.flag, 'redirect')
+    assert_equal(directive.pattern, '^/(.*)$')
+    assert_equal(directive.replace, 'http://some/$1')
+    assert_equal(directive.flag, 'redirect')
 
 
 def test_root():
@@ -93,9 +93,9 @@ def test_root():
 
     directive = _get_parsed(config)
     assert_is_instance(directive, RootDirective)
-    assert_equals(directive.name, 'root')
-    assert_equals(directive.args, ['/var/www/html'])
-    assert_equals(str(directive), 'root /var/www/html;')
+    assert_equal(directive.name, 'root')
+    assert_equal(directive.args, ['/var/www/html'])
+    assert_equal(str(directive), 'root /var/www/html;')
     assert_true(directive.provide_variables)
 
-    assert_equals(directive.path, '/var/www/html')
+    assert_equal(directive.path, '/var/www/html')

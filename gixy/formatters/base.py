@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-
 import gixy
 from gixy.directives import block
 
@@ -74,10 +72,10 @@ class BaseFormatter(object):
         for leap in tree.children:
             if leap not in points:
                 continue
-            printable = type(leap) not in self.skip_parents
+            printable = all(not isinstance(leap, p) for p in self.skip_parents)
             # Special hack for includes
             # TODO(buglloc): fix me
-            have_parentheses = type(leap) != block.IncludeBlock
+            have_parentheses = not isinstance(leap, block.IncludeBlock)
 
             if printable:
                 if leap.is_block:

@@ -1,10 +1,10 @@
 import logging
 import codecs
-import six
+import re
 from cached_property import cached_property
 
 from pyparsing import (
-    Literal, Suppress, White, Word, alphanums, Forward, Group, Optional, Combine,
+    Literal, Suppress, Word, alphanums, Forward, Group, Optional, Combine,
     Keyword, OneOrMore, ZeroOrMore, Regex, QuotedString, nestedExpr, ParseResults)
 
 LOG = logging.getLogger(__name__)
@@ -17,7 +17,7 @@ class NginxQuotedString(QuotedString):
         # '^https?:\/\/yandex\.ru\/\00\'\"' -> ^https?:\/\/yandex\.ru\/\00'"
         # TODO(buglloc): research and find another special characters!
 
-        self.escCharReplacePattern = '\\\\(\'|")'
+        self.unquote_scan_re = re.compile("(\\\\t|\\\\r|\\\\n)|(\\\\\"|\\\\')|(\\n|.)")
 
 
 class RawParser(object):
@@ -29,7 +29,7 @@ class RawParser(object):
         """
         Returns the parsed tree.
         """
-        if isinstance(data, six.binary_type):
+        if isinstance(data, bytes):
             if data[:3] == codecs.BOM_UTF8:
                 encoding = 'utf-8-sig'
             else:
@@ -49,7 +49,6 @@ class RawParser(object):
         left_bracket = Suppress("{")
         right_bracket = Suppress("}")
         semicolon = Suppress(";")
-        space = White().suppress()
         keyword = Word(alphanums + ".+-_/")
         path = Word(alphanums + ".-_/")
         variable = Word("$_-" + alphanums)
@@ -71,23 +70,22 @@ class RawParser(object):
         # so we capture all content between parentheses and then parse it :(
         # TODO(buglloc): may be use something better?
         condition_body = (
-            (if_modifier + Optional(space) + value) |
-            (variable + Optional(space + if_modifier + Optional(space) + value))
+            (if_modifier + value) |
+            (variable + Optional(if_modifier + value))
         )
         condition = Regex(r'\((?:[^()\n\r\\]|(?:\(.*\))|(?:\\.))+?\)')\
-            .setParseAction(lambda s, l, t: condition_body.parseString(t[0][1:-1]))
+            .setParseAction(lambda s, loc, toks: condition_body.parseString(toks[0][1:-1]))
 
         # rules
         include = (
             Keyword("include") +
-            space +
             value +
             semicolon
         )("include")
 
         directive = (
             keyword +
-            ZeroOrMore(space + value) +
+            ZeroOrMore(value) +
             semicolon
         )("directive")
 
@@ -103,7 +101,7 @@ class RawParser(object):
 
         hash_value = Group(
             value +
-            ZeroOrMore(space + value) +
+            ZeroOrMore(value) +
             semicolon
         )("hash_value")
 
@@ -136,8 +134,7 @@ class RawParser(object):
         location_block << (
             Keyword("location") +
             Group(
-                Optional(space + location_modifier) +
-                Optional(space) + value) +
+                Optional(location_modifier) + value) +
             Suppress(Optional(comment)) +
             Group(
                 left_bracket +
@@ -147,7 +144,7 @@ class RawParser(object):
 
         hash_block << (
             keyword +
-            Group(OneOrMore(space + value)) +
+            Group(OneOrMore(value)) +
             Group(
                 left_bracket +
                 Optional(OneOrMore(hash_value)) +
@@ -156,7 +153,7 @@ class RawParser(object):
 
         generic_block << (
             keyword +
-            Group(ZeroOrMore(space + value)) +
+            Group(ZeroOrMore(value)) +
             Suppress(Optional(comment)) +
             Group(
                 left_bracket +
@@ -166,7 +163,7 @@ class RawParser(object):
 
         unparsed_block << (
             keyword +
-            Group(ZeroOrMore(space + value)) +
+            Group(ZeroOrMore(value)) +
             nestedExpr(opener="{", closer="}")
         )("unparsed_block")
 

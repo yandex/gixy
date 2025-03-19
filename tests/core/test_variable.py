@@ -1,8 +1,9 @@
-from nose.tools import assert_true, assert_false, assert_equals, with_setup
+from nose.tools import assert_true, assert_false, assert_equal, with_setup
 from gixy.core.context import get_context, push_context, purge_context
 from gixy.directives.block import Root
 from gixy.core.regexp import Regexp
 from gixy.core.variable import Variable
+
 
 def setup():
     push_context(Root())
@@ -17,7 +18,7 @@ def test_literal():
     var = Variable(name='simple', value='$uri', have_script=False)
     assert_false(var.depends)
     assert_false(var.regexp)
-    assert_equals(var.value, '$uri')
+    assert_equal(var.value, '$uri')
 
     assert_false(var.can_startswith('$'))
     assert_false(var.can_contain('i'))

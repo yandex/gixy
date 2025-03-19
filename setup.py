@@ -16,13 +16,12 @@ setup(
     author='Yandex IS Team',
     author_email='buglloc@yandex.ru',
     url='https://github.com/yandex/gixy',
+    python_requires='>=3.9',
     install_requires=[
-        'pyparsing>=1.5.5,<3',
-        'cached-property>=1.2.0',
-        'argparse>=1.4.0;python_version<"3.2"',
-        'six>=1.1.0',
-        'Jinja2>=2.8',
-        'ConfigArgParse>=0.11.0'
+        'pyparsing>=3.2.1',
+        'cached-property>=2.0.1',
+        'Jinja2>=3.1.5',
+        'ConfigArgParse>=1.7'
     ],
     entry_points={
         'console_scripts': ['gixy=gixy.cli.main:main'],
@@ -36,7 +35,13 @@ setup(
         'Intended Audience :: Developers',
         'Topic :: Security',
         'Topic :: Software Development :: Quality Assurance',
-        'Topic :: Software Development :: Testing'
+        'Topic :: Software Development :: Testing',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3 :: 3.9',
+        'Programming Language :: Python :: 3 :: 3.10',
+        'Programming Language :: Python :: 3 :: 3.11',
+        'Programming Language :: Python :: 3 :: 3.12',
+        'Programming Language :: Python :: 3 :: 3.13',
     ],
     include_package_data=True
 )

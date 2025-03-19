@@ -1,13 +1,13 @@
-from nose.tools import assert_equals, assert_true
+from nose.tools import assert_equal, assert_true
 from tests.asserts import assert_in
 import os
 from os import path
 import json
 
-from ..utils import *
 from gixy.core.manager import Manager as Gixy
 from gixy.core.plugins_manager import PluginsManager
 from gixy.core.config import Config
+from gixy.formatters.base import BaseFormatter
 
 
 def setup_module():
@@ -57,7 +57,8 @@ def test_from_config():
         assert_true(plugin in tested_plugins,
                     'Plugin {name!r} should have at least one simple test config'.format(name=plugin))
         assert_true(plugin in tested_fp_plugins,
-                    'Plugin {name!r} should have at least one simple test config with false positive'.format(name=plugin))
+                    'Plugin {name!r} should have at least one simple test config with false positive'
+                    .format(name=plugin))
 
 
 def parse_plugin_options(config_path):
@@ -86,15 +87,15 @@ def check_configuration(plugin, config_path, test_config):
         formatter.feed(config_path, yoda)
         _, results = formatter.reports.popitem()
 
-        assert_equals(len(results), 1, 'Should have one report')
+        assert_equal(len(results), 1, 'Should have one report')
         result = results[0]
 
         if 'severity' in test_config:
             if not hasattr(test_config['severity'], '__iter__'):
-                assert_equals(result['severity'], test_config['severity'])
+                assert_equal(result['severity'], test_config['severity'])
             else:
                 assert_in(result['severity'], test_config['severity'])
-        assert_equals(result['plugin'], plugin)
+        assert_equal(result['plugin'], plugin)
         assert_true(result['summary'])
         assert_true(result['description'])
         assert_true(result['config'])
@@ -105,5 +106,5 @@ def check_configuration(plugin, config_path, test_config):
 def check_configuration_fp(plugin, config_path, test_config):
     with yoda_provider(plugin) as yoda:
         yoda.audit(config_path, open(config_path, mode='r'))
-        assert_equals(len([x for x in yoda.results]), 0,
-                      'False positive configuration must not trigger any plugins')
+        assert_equal(len([x for x in yoda.results]), 0,
+                     'False positive configuration must not trigger any plugins')

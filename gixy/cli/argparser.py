@@ -1,7 +1,7 @@
 # flake8: noqa
 
 from configargparse import *
-from six.moves import StringIO
+from io import StringIO
 
 from gixy.core.plugins_manager import PluginsManager
 
@@ -119,7 +119,8 @@ class ArgsParser(ArgumentParser):
                     config_file_keys = self.get_possible_config_keys(action)
                     if config_file_keys and not action.is_positional_arg and \
                         already_on_command_line(existing_command_line_args,
-                                                action.option_strings):
+                                                action.option_strings,
+                                                self.prefix_chars):
                         value = getattr(parsed_namespace, action.dest, None)
                         if value is not None:
                             if type(value) is bool:

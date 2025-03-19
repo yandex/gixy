@@ -1,8 +1,8 @@
 from nose.tools import assert_equal
 from tests.asserts import assert_is_instance
 from gixy.parser.nginx_parser import NginxParser
-from gixy.directives.directive import *
-from gixy.directives.block import *
+from gixy.directives.directive import Directive, SetDirective, RewriteDirective
+from gixy.directives.block import Block, Root, HttpBlock, ServerBlock, LocationBlock, IfBlock, IncludeBlock
 
 
 def _parse(config):

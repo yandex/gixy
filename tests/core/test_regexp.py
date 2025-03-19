@@ -1,4 +1,4 @@
-from nose.tools import assert_true, assert_false, assert_equals
+from nose.tools import assert_true, assert_false, assert_equal
 from gixy.core.regexp import Regexp
 
 '''
@@ -88,7 +88,7 @@ def test_to_string():
         (r'foo', 'foo'),
         (r'(1)(2)(?:3)', '(1)(2)(?:3)'),
         (r'(1)((2)|(?:3))', '(1)((?:(2)|(?:3)))'),
-        (r'\w|1|3-5|[a-z]', '(?:[\w]|1|3\\-5|[a-z])'),
+        (r'\w|1|3-5|[a-z]', '(?:[\\w]|1|3\\-5|[a-z])'),
         (r'(1|(?:3)|([4-6]))', '((?:1|(?:3)|([4-6])))'),
         (r'(1|(?:3)|(?P<aaa>[4-6]))', '((?:1|(?:3)|([4-6])))'),
         (r'^sss', '^sss'),
@@ -97,6 +97,7 @@ def test_to_string():
         (r'1*', '1*'),
         (r'1*?', '1*?'),
         (r'1+', '1+'),
+        (r'(?>abc)def', '(?>abc)def'),
     )
     for case in cases:
         regexp, string = case
@@ -258,26 +259,26 @@ def test_generate():
 
 def test_strict_generate():
     reg = Regexp('^foo|bar', strict=True)
-    assert_equals(sorted(reg.generate('|', anchored=True)), sorted(['^foo', '^bar']))
+    assert_equal(sorted(reg.generate('|', anchored=True)), sorted(['^foo', '^bar']))
 
 
 def test_gen_anchor():
 
     reg = Regexp('^some$')
     val = next(reg.generate('', anchored=False))
-    assert_equals(val, 'some')
+    assert_equal(val, 'some')
 
     reg = Regexp('^some$')
     val = next(reg.generate('', anchored=True))
-    assert_equals(val, '^some$')
+    assert_equal(val, '^some$')
 
     reg = Regexp('^some$', strict=True)
     val = next(reg.generate('', anchored=False))
-    assert_equals(val, 'some')
+    assert_equal(val, 'some')
 
     reg = Regexp('^some$', strict=True)
     val = next(reg.generate('', anchored=True))
-    assert_equals(val, '^some$')
+    assert_equal(val, '^some$')
 
 
 def test_group_can_contains():
@@ -345,12 +346,12 @@ def check_negative_startswith(regexp, char, strict):
 
 def check_groups_names(regexp, groups):
     reg = Regexp(regexp)
-    assert_equals(set(reg.groups.keys()), set(groups))
+    assert_equal(set(reg.groups.keys()), set(groups))
 
 
 def check_to_string(regexp, string):
     reg = Regexp(regexp)
-    assert_equals(str(reg), string)
+    assert_equal(str(reg), string)
 
 
 def check_positive_must_contain(regexp, char):
@@ -399,4 +400,4 @@ def check_negative_must_startswith(regexp, char, strict):
 
 def check_generate(regexp, values):
     reg = Regexp(regexp)
-    assert_equals(sorted(reg.generate('|', anchored=True)), sorted(values))
+    assert_equal(sorted(reg.generate('|', anchored=True)), sorted(values))

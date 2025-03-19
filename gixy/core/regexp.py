@@ -1,11 +1,10 @@
-import six
 import logging
 import re
 import random
 import itertools
 from cached_property import cached_property
 
-import gixy.core.sre_parse.sre_parse as sre_parse
+from .sre_parse import _parser
 
 LOG = logging.getLogger(__name__)
 
@@ -13,7 +12,7 @@ LOG = logging.getLogger(__name__)
 def _build_reverse_list(original):
     result = []
     for c in range(1, 126):
-        c = six.unichr(c)
+        c = chr(c)
         if c not in original:
             result.append(c)
     return frozenset(result)
@@ -23,28 +22,28 @@ FIX_NAMED_GROUPS_RE = re.compile(r"(?<!\\)\(\?(?:<|')(\w+)(?:>|')")
 
 CATEGORIES = {
     # TODO(buglloc): unicode?
-    sre_parse.CATEGORY_SPACE: sre_parse.WHITESPACE,
-    sre_parse.CATEGORY_NOT_SPACE: _build_reverse_list(sre_parse.WHITESPACE),
-    sre_parse.CATEGORY_DIGIT: sre_parse.DIGITS,
-    sre_parse.CATEGORY_NOT_DIGIT: _build_reverse_list(sre_parse.DIGITS),
-    sre_parse.CATEGORY_WORD: frozenset('abcdefghijklmnopqrstuvwxyz'
-                                       'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-                                       '0123456789_'),
-    sre_parse.CATEGORY_NOT_WORD: _build_reverse_list(frozenset('abcdefghijklmnopqrstuvwxyz'
-                                                               'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-                                                               '0123456789_')),
-    sre_parse.CATEGORY_LINEBREAK: frozenset('\n'),
-    sre_parse.CATEGORY_NOT_LINEBREAK: _build_reverse_list(frozenset('\n')),
-    'ANY': [six.unichr(x) for x in range(1, 127) if x != 10]
+    _parser.CATEGORY_SPACE: _parser.WHITESPACE,
+    _parser.CATEGORY_NOT_SPACE: _build_reverse_list(_parser.WHITESPACE),
+    _parser.CATEGORY_DIGIT: _parser.DIGITS,
+    _parser.CATEGORY_NOT_DIGIT: _build_reverse_list(_parser.DIGITS),
+    _parser.CATEGORY_WORD: frozenset('abcdefghijklmnopqrstuvwxyz'
+                                     'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+                                     '0123456789_'),
+    _parser.CATEGORY_NOT_WORD: _build_reverse_list(frozenset('abcdefghijklmnopqrstuvwxyz'
+                                                             'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+                                                             '0123456789_')),
+    _parser.CATEGORY_LINEBREAK: frozenset('\n'),
+    _parser.CATEGORY_NOT_LINEBREAK: _build_reverse_list(frozenset('\n')),
+    'ANY': [chr(x) for x in range(1, 127) if x != 10]
 }
 
 CATEGORIES_NAMES = {
-    sre_parse.CATEGORY_DIGIT: r'\d',
-    sre_parse.CATEGORY_NOT_DIGIT: r'\D',
-    sre_parse.CATEGORY_SPACE: r'\s',
-    sre_parse.CATEGORY_NOT_SPACE: r'\S',
-    sre_parse.CATEGORY_WORD: r'\w',
-    sre_parse.CATEGORY_NOT_WORD: r'\W',
+    _parser.CATEGORY_DIGIT: r'\d',
+    _parser.CATEGORY_NOT_DIGIT: r'\D',
+    _parser.CATEGORY_SPACE: r'\s',
+    _parser.CATEGORY_NOT_SPACE: r'\S',
+    _parser.CATEGORY_WORD: r'\w',
+    _parser.CATEGORY_NOT_WORD: r'\W',
 }
 
 
@@ -56,22 +55,22 @@ def extract_groups(parsed, top=True):
         if not token:
             # Skip empty tokens
             pass
-        elif token[0] == sre_parse.SUBPATTERN:
-            if isinstance(token[1][0], int):
-                # Captured group index can't be a string. E.g. for pattern "(?:la)" group name is "None"
-                result[token[1][0]] = token[1][1]
-            result.update(extract_groups(token[1][1], False))
-        elif token[0] == sre_parse.MIN_REPEAT:
+        elif token[0] == _parser.SUBPATTERN:
+            # (group, add_flags, del_flags, pattern)
+            if token[1][0] is not None:
+                result[token[1][0]] = token[1][3]
+            result.update(extract_groups(token[1][3], False))
+        elif token[0] == _parser.MIN_REPEAT:
             result.update(extract_groups(token[1][2], False))
-        elif token[0] == sre_parse.MAX_REPEAT:
+        elif token[0] == _parser.MAX_REPEAT:
             result.update(extract_groups(token[1][2], False))
-        elif token[0] == sre_parse.BRANCH:
+        elif token[0] == _parser.BRANCH:
             result.update(extract_groups(token[1][1], False))
-        elif token[0] == sre_parse.SUBPATTERN:
-            result.update(extract_groups(token[1][1], False))
-        elif token[0] == sre_parse.IN:
+        elif token[0] == _parser.IN:
             result.update(extract_groups(token[1], False))
-        elif isinstance(token, sre_parse.SubPattern):
+        elif token[0] == _parser.ATOMIC_GROUP:
+            result.update(extract_groups(token[1], False))
+        elif isinstance(token, _parser.SubPattern):
             result.update(extract_groups(token, False))
     return result
 
@@ -94,10 +93,10 @@ def _gen_combinator(variants, _merge=True):
         producted = itertools.product(*res)
         if _merge:
             # TODO(buglloc): ??!
-            return list(six.moves.map(_merge_variants, producted))
+            return list(map(_merge_variants, producted))
         return producted
     elif _merge:
-        return list(six.moves.map(_merge_variants, [res]))
+        return list(map(_merge_variants, [res]))
     return res
 
 
@@ -156,7 +155,7 @@ class Token(object):
 
 
 class AnyToken(Token):
-    type = sre_parse.ANY
+    type = _parser.ANY
 
     def can_contain(self, char, skip_literal=True):
         return char in CATEGORIES['ANY']
@@ -175,10 +174,10 @@ class AnyToken(Token):
 
 
 class LiteralToken(Token):
-    type = sre_parse.LITERAL
+    type = _parser.LITERAL
 
     def _parse(self):
-        self.char = six.unichr(self.token[1])
+        self.char = chr(self.token[1])
 
     def can_contain(self, char, skip_literal=True):
         if skip_literal:
@@ -196,10 +195,10 @@ class LiteralToken(Token):
 
 
 class NotLiteralToken(Token):
-    type = sre_parse.NOT_LITERAL
+    type = _parser.NOT_LITERAL
 
     def _parse(self):
-        self.char = six.unichr(self.token[1])
+        self.char = chr(self.token[1])
         self.gen_char_list = list(_build_reverse_list(frozenset(self.char)))
 
     def can_contain(self, char, skip_literal=True):
@@ -220,13 +219,13 @@ class NotLiteralToken(Token):
 
 
 class RangeToken(Token):
-    type = sre_parse.RANGE
+    type = _parser.RANGE
 
     def _parse(self):
         self.left_code = self.token[1][0]
         self.right_code = self.token[1][1]
-        self.left = six.unichr(self.left_code)
-        self.right = six.unichr(self.right_code)
+        self.left = chr(self.left_code)
+        self.right = chr(self.right_code)
 
     def can_contain(self, char, skip_literal=True):
         return self.left <= char <= self.right
@@ -238,14 +237,14 @@ class RangeToken(Token):
         if self.can_contain(context.char):
             return context.char
 
-        return six.unichr(random.randint(self.token[1][0], self.token[1][1]))
+        return chr(random.randint(self.token[1][0], self.token[1][1]))
 
     def __str__(self):
         return '{left}-{right}'.format(left=self.left, right=self.right)
 
 
 class CategoryToken(Token):
-    type = sre_parse.CATEGORY
+    type = _parser.CATEGORY
 
     def _parse(self):
         self.char_list = CATEGORIES.get(self.token[1], [''])
@@ -268,7 +267,7 @@ class CategoryToken(Token):
 
 
 class MinRepeatToken(Token):
-    type = sre_parse.MIN_REPEAT
+    type = _parser.MIN_REPEAT
 
     def _parse(self):
         self._parse_childs(self.token[1][2])
@@ -337,15 +336,15 @@ class MinRepeatToken(Token):
             return '{childs}{{{count}}}?'.format(childs=childs, count=self.min)
         if self.min == 0 and self.max == 1:
             return '{childs}?'.format(childs=childs)
-        if self.min == 0 and self.max == sre_parse.MAXREPEAT:
+        if self.min == 0 and self.max == _parser.MAXREPEAT:
             return '{childs}*?'.format(childs=childs)
-        if self.min == 1 and self.max == sre_parse.MAXREPEAT:
+        if self.min == 1 and self.max == _parser.MAXREPEAT:
             return '{childs}+?'.format(childs=childs)
         return '{childs}{{{min},{max}}}?'.format(childs=childs, min=self.min, max=self.max)
 
 
 class MaxRepeatToken(Token):
-    type = sre_parse.MAX_REPEAT
+    type = _parser.MAX_REPEAT
 
     def _parse(self):
         self._parse_childs(self.token[1][2])
@@ -414,22 +413,22 @@ class MaxRepeatToken(Token):
             return '{childs}{{{count}}}'.format(childs=childs, count=self.min)
         if self.min == 0 and self.max == 1:
             return '{childs}?'.format(childs=childs)
-        if self.min == 0 and self.max == sre_parse.MAXREPEAT:
+        if self.min == 0 and self.max == _parser.MAXREPEAT:
             return '{childs}*'.format(childs=childs)
-        if self.min == 1 and self.max == sre_parse.MAXREPEAT:
+        if self.min == 1 and self.max == _parser.MAXREPEAT:
             return '{childs}+'.format(childs=childs)
         return '{childs}{{{min},{max}}}'.format(childs=childs, min=self.min, max=self.max)
 
 
 class BranchToken(Token):
-    type = sre_parse.BRANCH
+    type = _parser.BRANCH
 
     def _parse(self):
         self.childs = []
         for token in self.token[1][1]:
             if not token:
                 self.childs.append(EmptyToken(token=token, parent=self.parent, regexp=self.regexp))
-            elif isinstance(token, sre_parse.SubPattern):
+            elif isinstance(token, _parser.SubPattern):
                 self.childs.append(InternalSubpatternToken(token=token, parent=self.parent, regexp=self.regexp))
             else:
                 raise RuntimeError('Unexpected token {0} in branch'.format(token))
@@ -465,13 +464,13 @@ class BranchToken(Token):
 
 
 class SubpatternToken(Token):
-    type = sre_parse.SUBPATTERN
+    type = _parser.SUBPATTERN
 
     def _parse(self):
-        self._parse_childs(self.token[1][1])
+        # (group, add_flags, del_flags, pattern)
+        self._parse_childs(self.token[1][3])
         self.group = self.token[1][0]
-        if isinstance(self.group, int):
-            # Captured group index can't be a string. E.g. for pattern "(?:la)" group name is "None"
+        if self.group is not None:
             self._reg_group(self.group)
 
     def can_contain(self, char, skip_literal=True):
@@ -541,7 +540,7 @@ class SubpatternToken(Token):
 
 
 class InternalSubpatternToken(Token):
-    type = sre_parse.SUBPATTERN
+    type = _parser.SUBPATTERN
 
     def _parse(self):
         self._parse_childs(self.token)
@@ -610,8 +609,41 @@ class InternalSubpatternToken(Token):
         return ''.join(str(x) for x in self.childs)
 
 
+class AtomicGroupToken(Token):
+    type = _parser.ATOMIC_GROUP
+
+    def _parse(self):
+        self._parse_childs(self.token[1])
+
+    def can_contain(self, char, skip_literal=True):
+        for child in self.childs:
+            if child.can_contain(char, skip_literal=skip_literal):
+                return True
+        return False
+
+    def must_contain(self, char):
+        return False
+
+    def can_startswith(self, char, strict=False):
+        return any(x.can_startswith(char, strict) for x in self.childs)
+
+    def must_startswith(self, char, strict=False):
+        return False
+
+    def generate(self, context):
+        res = []
+        for child in self.childs:
+            res.append(child.generate(context))
+
+        return _gen_combinator(res) + ['']
+
+    def __str__(self):
+        childs = ''.join(str(x) for x in self.childs)
+        return '(?>{childs})'.format(childs=childs)
+
+
 class InToken(Token):
-    type = sre_parse.IN
+    type = _parser.IN
 
     def _parse(self):
         self.childs = parse(self.token[1], self)
@@ -657,7 +689,7 @@ class InToken(Token):
             elif isinstance(child, LiteralToken):
                 blacklisted.add(child.char)
             elif isinstance(child, RangeToken):
-                blacklisted.update(six.unichr(c) for c in six.moves.range(child.left_code, child.right_code + 1))
+                blacklisted.update(chr(c) for c in range(child.left_code, child.right_code + 1))
             elif isinstance(child, CategoryToken):
                 blacklisted.update(child.char_list)
             else:
@@ -683,11 +715,11 @@ class InToken(Token):
 
 
 class AtToken(Token):
-    type = sre_parse.AT
+    type = _parser.AT
 
     def _parse(self):
-        self.begin = self.token[1] == sre_parse.AT_BEGINNING
-        self.end = self.token[1] == sre_parse.AT_END
+        self.begin = self.token[1] == _parser.AT_BEGINNING
+        self.end = self.token[1] == _parser.AT_END
 
     def can_contain(self, char, skip_literal=True):
         return False
@@ -712,7 +744,7 @@ class AtToken(Token):
 
 
 class NegateToken(Token):
-    type = sre_parse.NEGATE
+    type = _parser.NEGATE
 
     def can_contain(self, char, skip_literal=True):
         return False
@@ -734,7 +766,7 @@ class NegateToken(Token):
 
 
 class GroupRefToken(Token):
-    type = sre_parse.GROUPREF
+    type = _parser.GROUPREF
 
     def _parse(self):
         self.id = self.token[1]
@@ -760,7 +792,7 @@ class GroupRefToken(Token):
 
 
 class AssertToken(Token):
-    type = sre_parse.ASSERT
+    type = _parser.ASSERT
 
     def can_contain(self, char, skip_literal=True):
         # TODO(buglloc): Do it!
@@ -778,7 +810,7 @@ class AssertToken(Token):
 
 
 class AssertNotToken(Token):
-    type = sre_parse.ASSERT_NOT
+    type = _parser.ASSERT_NOT
 
     def can_contain(self, char, skip_literal=True):
         # TODO(buglloc): Do it!
@@ -823,35 +855,37 @@ def parse(sre_obj, parent=None, regexp=None):
     for token in sre_obj:
         if not token:
             result.append(EmptyToken(token=token, parent=parent, regexp=regexp))
-        elif token[0] == sre_parse.ANY:
+        elif token[0] == _parser.ANY:
             result.append(AnyToken(token=token, parent=parent, regexp=regexp))
-        elif token[0] == sre_parse.LITERAL:
+        elif token[0] == _parser.LITERAL:
             result.append(LiteralToken(token=token, parent=parent, regexp=regexp))
-        elif token[0] == sre_parse.NOT_LITERAL:
+        elif token[0] == _parser.NOT_LITERAL:
             result.append(NotLiteralToken(token=token, parent=parent, regexp=regexp))
-        elif token[0] == sre_parse.RANGE:
+        elif token[0] == _parser.RANGE:
             result.append(RangeToken(token=token, parent=parent, regexp=regexp))
-        elif token[0] == sre_parse.CATEGORY:
+        elif token[0] == _parser.CATEGORY:
             result.append(CategoryToken(token=token, parent=parent, regexp=regexp))
-        elif token[0] == sre_parse.MIN_REPEAT:
+        elif token[0] == _parser.MIN_REPEAT:
             result.append(MinRepeatToken(token=token, parent=parent, regexp=regexp))
-        elif token[0] == sre_parse.MAX_REPEAT:
+        elif token[0] == _parser.MAX_REPEAT:
             result.append(MaxRepeatToken(token=token, parent=parent, regexp=regexp))
-        elif token[0] == sre_parse.BRANCH:
+        elif token[0] == _parser.BRANCH:
             result.append(BranchToken(token=token, parent=parent, regexp=regexp))
-        elif token[0] == sre_parse.SUBPATTERN:
+        elif token[0] == _parser.SUBPATTERN:
             result.append(SubpatternToken(token=token, parent=parent, regexp=regexp))
-        elif token[0] == sre_parse.IN:
+        elif token[0] == _parser.ATOMIC_GROUP:
+            result.append(AtomicGroupToken(token=token, parent=parent, regexp=regexp))
+        elif token[0] == _parser.IN:
             result.append(InToken(token=token, parent=parent, regexp=regexp))
-        elif token[0] == sre_parse.NEGATE:
+        elif token[0] == _parser.NEGATE:
             result.append(NegateToken(token=token, parent=parent, regexp=regexp))
-        elif token[0] == sre_parse.AT:
+        elif token[0] == _parser.AT:
             result.append(AtToken(token=token, parent=parent, regexp=regexp))
-        elif token[0] == sre_parse.GROUPREF:
+        elif token[0] == _parser.GROUPREF:
             result.append(GroupRefToken(token=token, parent=parent, regexp=regexp))
-        elif token[0] == sre_parse.ASSERT:
+        elif token[0] == _parser.ASSERT:
             pass  # TODO(buglloc): Do it!
-        elif token[0] == sre_parse.ASSERT_NOT:
+        elif token[0] == _parser.ASSERT_NOT:
             pass  # TODO(buglloc): Do it!
         else:
             LOG.info('Unexpected token "{0}"'.format(token[0]))
@@ -997,13 +1031,10 @@ class Regexp(object):
 
     @cached_property
     def groups(self):
-        # self.root.parse()
         result = {}
-        # for name, token in self._groups.items():
-        #     result[name] = Regexp(str(self), root=token, strict=True, case_sensitive=self.case_sensitive)
         for name, parsed in extract_groups(self.parsed).items():
             result[name] = Regexp('compiled', _parsed=parsed, strict=True, case_sensitive=self.case_sensitive)
-        for name, group in self.parsed.pattern.groupdict.items():
+        for name, group in self.parsed.state.groupdict.items():
             result[name] = result[group]
         return result
 
@@ -1023,8 +1054,8 @@ class Regexp(object):
             return self._parsed
 
         try:
-            self._parsed = sre_parse.parse(FIX_NAMED_GROUPS_RE.sub('(?P<\\1>', self.source))
-        except sre_parse.error as e:
+            self._parsed = _parser.parse(FIX_NAMED_GROUPS_RE.sub('(?P<\\1>', self.source))
+        except _parser.error as e:
             LOG.fatal('Failed to parse regex: %s (%s)', self.source, str(e))
             raise e
 

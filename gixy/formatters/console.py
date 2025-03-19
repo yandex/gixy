@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-
 from gixy.formatters.base import BaseFormatter
 from gixy.formatters._jinja import load_template
 

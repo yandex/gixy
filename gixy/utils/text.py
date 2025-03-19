@@ -1,12 +1,8 @@
-from __future__ import absolute_import
-from six import PY3, text_type, binary_type
-
-
 def to_bytes(obj, encoding='latin1', errors='strict', nonstring='replace'):
-    if isinstance(obj, binary_type):
+    if isinstance(obj, bytes):
         return obj
 
-    if isinstance(obj, text_type):
+    if isinstance(obj, str):
         try:
             # Try this first as it's the fastest
             return obj.encode(encoding, errors)
@@ -36,10 +32,10 @@ def to_bytes(obj, encoding='latin1', errors='strict', nonstring='replace'):
 
 
 def to_text(obj, encoding='latin1', errors='strict', nonstring='replace'):
-    if isinstance(obj, text_type):
+    if isinstance(obj, str):
         return obj
 
-    if isinstance(obj, binary_type):
+    if isinstance(obj, bytes):
         try:
             return obj.decode(encoding, errors)
         except UnicodeEncodeError:
@@ -66,7 +62,4 @@ def to_text(obj, encoding='latin1', errors='strict', nonstring='replace'):
     return to_text(value, encoding, errors)
 
 
-if PY3:
-    to_native = to_text
-else:
-    to_native = to_bytes
+to_native = to_text

@@ -1,5 +1,5 @@
-from nose.tools import assert_equals
-from gixy.parser.raw_parser import *
+from nose.tools import assert_equal
+from gixy.parser.raw_parser import RawParser
 
 
 def test_directive():
@@ -11,8 +11,8 @@ set $foo "bar";
 set $foo 'bar';
 proxy_pass http://unix:/run/sock.socket;
 rewrite ^/([a-zA-Z0-9]+)$ /$1/${arg_v}.pb break;
-    server_name some.tld ~^(www\.)?podberi.(?:ru|com|ua)$
-    ~^(www\.)?guru.yandex.ru$;
+    server_name some.tld ~^(www\\.)?podberi.(?:ru|com|ua)$
+    ~^(www\\.)?guru.yandex.ru$;
         '''
 
     expected = [
@@ -23,7 +23,7 @@ rewrite ^/([a-zA-Z0-9]+)$ /$1/${arg_v}.pb break;
         ['set', '$foo', 'bar'],
         ['proxy_pass', 'http://unix:/run/sock.socket'],
         ['rewrite', '^/([a-zA-Z0-9]+)$', '/$1/${arg_v}.pb', 'break'],
-        ['server_name', 'some.tld', '~^(www\.)?podberi.(?:ru|com|ua)$', '~^(www\.)?guru.yandex.ru$']
+        ['server_name', 'some.tld', '~^(www\\.)?podberi.(?:ru|com|ua)$', '~^(www\\.)?guru.yandex.ru$']
     ]
 
     assert_config(config, expected)
@@ -63,7 +63,7 @@ location ~* ^/baz$ {
 location ^~ ^/bazz {
 }
 # Whitespace may be omitted:((
-location ~\.(js|css)$ {
+location ~\\.(js|css)$ {
 }
         '''
 
@@ -73,7 +73,7 @@ location ~\.(js|css)$ {
                 ['location', ['~*', '^/baz$'], []],
                 ['location', ['^~', '^/bazz'], []],
                 ['Whitespace may be omitted:(('],
-                ['location', ['~', '\.(js|css)$'], []]]
+                ['location', ['~', '\\.(js|css)$'], []]]
 
     assert_config(config, expected)
 
@@ -222,14 +222,14 @@ if (!-e "/var/data/$dataset") {
     return 503;
 }
 
-if ($https_or_slb = (by_\(sl\)b|https)) {
+if ($https_or_slb = (by_\\(sl\\)b|https)) {
 }
 
-if ($host ~* (lori|rage2)\.yandex\.(ru|ua|com|com\.tr)) {
+if ($host ~* (lori|rage2)\\.yandex\\.(ru|ua|com|com\\.tr)) {
     set $x_frame_options ALLOW;
 }
 
-if ($request_filename ~* ^.*?/(\d+_)([^/]+)$) {
+if ($request_filename ~* ^.*?/(\\d+_)([^/]+)$) {
 }
 
 if ($http_user_agent ~* "^WordPress.*; verifying pingback") {
@@ -258,12 +258,12 @@ if ($foo = "BAR") { rewrite ^(.*)$ /bar; }
         ['if', ['!-e', '/var/data/$dataset'], [
             ['return', '503']
         ]],
-        ['if', ['$https_or_slb', '=', '(by_\(sl\)b|https)'], [
+        ['if', ['$https_or_slb', '=', '(by_\\(sl\\)b|https)'], [
         ]],
-        ['if', ['$host', '~*', '(lori|rage2)\.yandex\.(ru|ua|com|com\.tr)'], [
+        ['if', ['$host', '~*', '(lori|rage2)\\.yandex\\.(ru|ua|com|com\\.tr)'], [
             ['set', '$x_frame_options', 'ALLOW']
         ]],
-        ['if', ['$request_filename', '~*', '^.*?/(\d+_)([^/]+)$'], [
+        ['if', ['$request_filename', '~*', '^.*?/(\\d+_)([^/]+)$'], [
         ]],
         ['if', ['$http_user_agent', '~*', '^WordPress.*; verifying pingback'], [
         ]],
@@ -360,14 +360,14 @@ server {
 def test_issue_8():
     config = '''
 # http://nginx.org/ru/docs/http/ngx_http_upstream_module.html
-if ($http_referer ~* (\.(ru|ua|by|kz)/(pages/music|partners/|page-no-rights\.xml)) ) {
+if ($http_referer ~* (\\.(ru|ua|by|kz)/(pages/music|partners/|page-no-rights\\.xml)) ) {
     set $temp A;
 }
         '''
 
     expected = [
         ['http://nginx.org/ru/docs/http/ngx_http_upstream_module.html'],
-        ['if', ['$http_referer', '~*', '(\.(ru|ua|by|kz)/(pages/music|partners/|page-no-rights\.xml))'], [
+        ['if', ['$http_referer', '~*', '(\\.(ru|ua|by|kz)/(pages/music|partners/|page-no-rights\\.xml))'], [
             ['set', '$temp', 'A']
         ]]
     ]
@@ -415,9 +415,9 @@ location = /lua {
             ['content_by_lua_block', [], [
                 'local', 'res', '=', 'ngx.location.capture(', '"/some_other_location"', ')',
                 'if', 'res', 'then',
-                    'ngx.say(', '"status: "', ',', 'res.status)',
-                    'ngx.say(', '"body:"', ')',
-                    'ngx.print(res.body)',
+                'ngx.say(', '"status: "', ',', 'res.status)',
+                'ngx.say(', '"body:"', ')',
+                'ngx.print(res.body)',
                 'end']]
         ]]
     ]
@@ -442,7 +442,7 @@ location = /foo {
         ['location', ['=', '/foo'], [
             ['rewrite_by_lua_block', [], [
                 'res', '=', 'ngx.location.capture(', '"/memc"', ',',
-                    ['args', '=', ['cmd', '=', '"incr"', ',', 'key', '=', 'ngx.var.uri']],
+                ['args', '=', ['cmd', '=', '"incr"', ',', 'key', '=', 'ngx.var.uri']],
                 ')']],
             ['proxy_pass', 'http://blah.blah.com']
         ]]
@@ -481,15 +481,15 @@ def test_comments():
 # Some comment
 add_header X-Some-Comment some;
 
-# 
+#
 # Comment with padding
-# 
+#
 add_header X-Padding-Comment padding;
 
 #
 add_header X-Blank-Comment blank;
 
-if (1) # Comment 
+if (1) # Comment
 {
     add_header X-Inline blank;
 }
@@ -556,9 +556,9 @@ add_header X-Test "Windows-1251";
         '''
 
     actual = RawParser().parse(config)
-    assert_equals(len(actual.asList()), 2)
+    assert_equal(len(actual.asList()), 2)
 
 
 def assert_config(config, expected):
     actual = RawParser().parse(config)
-    assert_equals(actual.asList(), expected)
+    assert_equal(actual.asList(), expected)
