@@ -1,7 +1,7 @@
 GIXY
 ====
 [![Mozilla Public License 2.0](https://img.shields.io/github/license/yandex/gixy.svg?style=flat-square)](https://github.com/yandex/gixy/blob/master/LICENSE)
-[![Build Status](https://img.shields.io/travis/yandex/gixy.svg?style=flat-square)](https://travis-ci.org/yandex/gixy)
+[![CI](https://github.com/yandex/gixy/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/yandex/gixy/actions/workflows/ci.yml)
 [![Your feedback is greatly appreciated](https://img.shields.io/maintenance/yes/2019.svg?style=flat-square)](https://github.com/yandex/gixy/issues/new)
 [![GitHub issues](https://img.shields.io/github/issues/yandex/gixy.svg?style=flat-square)](https://github.com/yandex/gixy/issues)
 [![GitHub pull requests](https://img.shields.io/github/issues-pr/yandex/gixy.svg?style=flat-square)](https://github.com/yandex/gixy/pulls)

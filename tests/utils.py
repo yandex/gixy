@@ -8,7 +8,7 @@ class LogHandler(BufferingHandler):
         # shouldFlush anyway, we can set a capacity of zero.
         # You can call flush() manually to clear out the
         # buffer.
-        super(LogHandler, self).__init__(0)
+        super().__init__(0)
         self.matcher = matcher
 
     def shouldFlush(self, **kwargs):
@@ -18,9 +18,8 @@ class LogHandler(BufferingHandler):
         self.buffer.append(record.__dict__)
 
     def matches(self, **kwargs):
-        """
-        Look for a saved dict whose keys/values match the supplied arguments.
-        """
+        """Look for a saved dict whose keys/values match the supplied
+        arguments."""
         result = False
         for d in self.buffer:
             if self.matcher.matches(d, **kwargs):
@@ -29,17 +28,16 @@ class LogHandler(BufferingHandler):
         return result
 
 
-class Matcher(object):
+class Matcher:
 
-    _partial_matches = ('msg', 'message')
+    _partial_matches = ("msg", "message")
 
     def matches(self, d, **kwargs):
-        """
-        Try to match a single dict with the supplied arguments.
+        """Try to match a single dict with the supplied arguments.
 
-        Keys whose values are strings and which are in self._partial_matches
-        will be checked for partial (i.e. substring) matches. You can extend
-        this scheme to (for example) do regular expression matching, etc.
+        Keys whose values are strings and which are in self._partial_matches will be
+        checked for partial (i.e. substring) matches. You can extend this scheme to (for
+        example) do regular expression matching, etc.
         """
         result = True
         for k in kwargs:
@@ -51,13 +49,12 @@ class Matcher(object):
         return result
 
     def match_value(self, k, dv, v):
-        """
-        Try to match a single stored value (dv) with a supplied value (v).
-        """
+        """Try to match a single stored value (dv) with a supplied value
+        (v)."""
         if type(v) != type(dv):
             result = False
         elif type(dv) is not str or k not in self._partial_matches:
-            result = (v == dv)
+            result = v == dv
         else:
             result = dv.find(v) >= 0
         return result

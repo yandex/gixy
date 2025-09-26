@@ -1,9 +1,10 @@
 from nose.tools import assert_equals
+
 from gixy.parser.raw_parser import *
 
 
 def test_directive():
-    config = '''
+    config = r"""
 access_log syslog:server=127.0.0.1,tag=nginx_sentry toolsformat;
 user http;
 internal;
@@ -13,45 +14,50 @@ proxy_pass http://unix:/run/sock.socket;
 rewrite ^/([a-zA-Z0-9]+)$ /$1/${arg_v}.pb break;
     server_name some.tld ~^(www\.)?podberi.(?:ru|com|ua)$
     ~^(www\.)?guru.yandex.ru$;
-        '''
+        """
 
     expected = [
-        ['access_log', 'syslog:server=127.0.0.1,tag=nginx_sentry', 'toolsformat'],
-        ['user', 'http'],
-        ['internal'],
-        ['set', '$foo', 'bar'],
-        ['set', '$foo', 'bar'],
-        ['proxy_pass', 'http://unix:/run/sock.socket'],
-        ['rewrite', '^/([a-zA-Z0-9]+)$', '/$1/${arg_v}.pb', 'break'],
-        ['server_name', 'some.tld', '~^(www\.)?podberi.(?:ru|com|ua)$', '~^(www\.)?guru.yandex.ru$']
+        ["access_log", "syslog:server=127.0.0.1,tag=nginx_sentry", "toolsformat"],
+        ["user", "http"],
+        ["internal"],
+        ["set", "$foo", "bar"],
+        ["set", "$foo", "bar"],
+        ["proxy_pass", "http://unix:/run/sock.socket"],
+        ["rewrite", "^/([a-zA-Z0-9]+)$", "/$1/${arg_v}.pb", "break"],
+        [
+            "server_name",
+            "some.tld",
+            r"~^(www\.)?podberi.(?:ru|com|ua)$",
+            r"~^(www\.)?guru.yandex.ru$",
+        ],
     ]
 
     assert_config(config, expected)
 
 
 def test_block():
-    config = '''
+    config = """
 http {
 }
-        '''
+        """
 
-    expected = [['http', [], []]]
+    expected = [["http", [], []]]
     assert_config(config, expected)
 
 
 def test_block_with_child():
-    config = '''
+    config = """
 http {
     gzip  on;
 }
-        '''
+        """
 
-    expected = [['http', [], [['gzip', 'on']]]]
+    expected = [["http", [], [["gzip", "on"]]]]
     assert_config(config, expected)
 
 
 def test_location_simple():
-    config = '''
+    config = r"""
 location / {
 }
 location = /foo {
@@ -65,46 +71,47 @@ location ^~ ^/bazz {
 # Whitespace may be omitted:((
 location ~\.(js|css)$ {
 }
-        '''
+        """
 
-    expected = [['location', ['/'], []],
-                ['location', ['=', '/foo'], []],
-                ['location', ['~', '^/bar'], []],
-                ['location', ['~*', '^/baz$'], []],
-                ['location', ['^~', '^/bazz'], []],
-                ['Whitespace may be omitted:(('],
-                ['location', ['~', '\.(js|css)$'], []]]
+    expected = [
+        ["location", ["/"], []],
+        ["location", ["=", "/foo"], []],
+        ["location", ["~", "^/bar"], []],
+        ["location", ["~*", "^/baz$"], []],
+        ["location", ["^~", "^/bazz"], []],
+        ["Whitespace may be omitted:(("],
+        ["location", ["~", r"\.(js|css)$"], []],
+    ]
 
     assert_config(config, expected)
 
 
 def test_quoted_strings():
-    config = '''
+    config = """
 some_sq '\\'la\\.\\/\\"';
 some_dq '\\'la\\.\\/\\"';
-        '''
+        """
 
-    expected = [['some_sq', '\'la\\.\\/\"'],
-                ['some_dq', '\'la\\.\\/\"']]
+    expected = [["some_sq", "'la\\.\\/\""], ["some_dq", "'la\\.\\/\""]]
 
     assert_config(config, expected)
 
 
 def test_location_child():
-    config = '''
+    config = """
 location = /foo {
      proxy_pass http://unix:/run/sock.socket;
 }
-        '''
+        """
 
-    expected = [['location', ['=', '/foo'], [
-        ['proxy_pass', 'http://unix:/run/sock.socket']
-    ]]]
+    expected = [
+        ["location", ["=", "/foo"], [["proxy_pass", "http://unix:/run/sock.socket"]]]
+    ]
     assert_config(config, expected)
 
 
 def test_nested_location():
-    config = '''
+    config = """
 location ~* ^/foo {
     location = /foo/bar {
         internal;
@@ -115,23 +122,28 @@ location ~* ^/foo {
         proxy_pass upstream;
     }
 }
-        '''
+        """
 
-    expected = [['location', ['~*', '^/foo'], [
-        ['location', ['=', '/foo/bar'], [
-            ['internal'],
-            ['proxy_pass', 'http://any.yandex.ru']
-        ]],
-        ['location', ['=', '/foo/baz'], [
-            ['proxy_pass', 'upstream']
-        ]],
-    ]]]
+    expected = [
+        [
+            "location",
+            ["~*", "^/foo"],
+            [
+                [
+                    "location",
+                    ["=", "/foo/bar"],
+                    [["internal"], ["proxy_pass", "http://any.yandex.ru"]],
+                ],
+                ["location", ["=", "/foo/baz"], [["proxy_pass", "upstream"]]],
+            ],
+        ]
+    ]
 
     assert_config(config, expected)
 
 
 def test_hash_block():
-    config = '''
+    config = """
 geo $geo {
     default        0;
 
@@ -142,22 +154,28 @@ geo $geo {
     ::1            2;
     2001:0db8::/32 1;
 }
-        '''
+        """
 
-    expected = [['geo', ['$geo'], [
-        ['default', '0'],
-        ['127.0.0.1', '2'],
-        ['192.168.1.0/24', '1'],
-        ['10.1.0.0/16', '1'],
-        ['::1', '2'],
-        ['2001:0db8::/32', '1']
-    ]]]
+    expected = [
+        [
+            "geo",
+            ["$geo"],
+            [
+                ["default", "0"],
+                ["127.0.0.1", "2"],
+                ["192.168.1.0/24", "1"],
+                ["10.1.0.0/16", "1"],
+                ["::1", "2"],
+                ["2001:0db8::/32", "1"],
+            ],
+        ]
+    ]
 
     assert_config(config, expected)
 
 
 def test_hash_block_in_location():
-    config = '''
+    config = """
 location /iphone/ {
     types {
       text/html  html htm shtml;
@@ -166,36 +184,44 @@ location /iphone/ {
       text/vnd.sun.j2me.app-descriptor  jad;
     }
 }
-        '''
+        """
 
-    expected = [['location', ['/iphone/'], [
-        ['types', [], [
-            ['text/html', 'html', 'htm', 'shtml'],
-            ['application/json', 'json'],
-            ['application/rss+xml', 'rss'],
-            ['text/vnd.sun.j2me.app-descriptor', 'jad']
-        ]],
-    ]]]
+    expected = [
+        [
+            "location",
+            ["/iphone/"],
+            [
+                [
+                    "types",
+                    [],
+                    [
+                        ["text/html", "html", "htm", "shtml"],
+                        ["application/json", "json"],
+                        ["application/rss+xml", "rss"],
+                        ["text/vnd.sun.j2me.app-descriptor", "jad"],
+                    ],
+                ],
+            ],
+        ]
+    ]
 
     assert_config(config, expected)
 
 
 def test_named_location():
-    config = '''
+    config = """
 location @foo {
     proxy_pass http://any.yandex.ru;
 }
-        '''
+        """
 
-    expected = [['location', ['@foo'], [
-        ['proxy_pass', 'http://any.yandex.ru']
-    ]]]
+    expected = [["location", ["@foo"], [["proxy_pass", "http://any.yandex.ru"]]]]
 
     assert_config(config, expected)
 
 
 def test_if():
-    config = '''
+    config = r"""
 # http://nginx.org/ru/docs/http/ngx_http_rewrite_module.html#if
 
 if ($http_user_agent ~ MSIE) {
@@ -236,47 +262,36 @@ if ($http_user_agent ~* "^WordPress.*; verifying pingback") {
 }
 
 if ($foo = "BAR") { rewrite ^(.*)$ /bar; }
-        '''
+        """
 
     expected = [
-        ['http://nginx.org/ru/docs/http/ngx_http_rewrite_module.html#if'],
-        ['if', ['$http_user_agent', '~', 'MSIE'], [
-            ['rewrite', '^(.*)$', '/msie/$1', 'break']
-        ]],
-        ['if', ['$http_cookie', '~*', 'id=([^;]+)(?:;|$)'], [
-            ['set', '$id', '$1']
-        ]],
-        ['if', ['$request_method', '=', 'POST'], [
-            ['return', '405']
-        ]],
-        ['if', ['$slow'], [
-            ['limit_rate', '10k']
-        ]],
-        ['if', ['$invalid_referer'], [
-            ['return', '403']
-        ]],
-        ['if', ['!-e', '/var/data/$dataset'], [
-            ['return', '503']
-        ]],
-        ['if', ['$https_or_slb', '=', '(by_\(sl\)b|https)'], [
-        ]],
-        ['if', ['$host', '~*', '(lori|rage2)\.yandex\.(ru|ua|com|com\.tr)'], [
-            ['set', '$x_frame_options', 'ALLOW']
-        ]],
-        ['if', ['$request_filename', '~*', '^.*?/(\d+_)([^/]+)$'], [
-        ]],
-        ['if', ['$http_user_agent', '~*', '^WordPress.*; verifying pingback'], [
-        ]],
-        ['if', ['$foo', '=', 'BAR'], [
-            ['rewrite', '^(.*)$', '/bar']
-        ]]
+        ["http://nginx.org/ru/docs/http/ngx_http_rewrite_module.html#if"],
+        [
+            "if",
+            ["$http_user_agent", "~", "MSIE"],
+            [["rewrite", "^(.*)$", "/msie/$1", "break"]],
+        ],
+        ["if", ["$http_cookie", "~*", "id=([^;]+)(?:;|$)"], [["set", "$id", "$1"]]],
+        ["if", ["$request_method", "=", "POST"], [["return", "405"]]],
+        ["if", ["$slow"], [["limit_rate", "10k"]]],
+        ["if", ["$invalid_referer"], [["return", "403"]]],
+        ["if", ["!-e", "/var/data/$dataset"], [["return", "503"]]],
+        ["if", ["$https_or_slb", "=", r"(by_\(sl\)b|https)"], []],
+        [
+            "if",
+            ["$host", "~*", r"(lori|rage2)\.yandex\.(ru|ua|com|com\.tr)"],
+            [["set", "$x_frame_options", "ALLOW"]],
+        ],
+        ["if", ["$request_filename", "~*", r"^.*?/(\d+_)([^/]+)$"], []],
+        ["if", ["$http_user_agent", "~*", "^WordPress.*; verifying pingback"], []],
+        ["if", ["$foo", "=", "BAR"], [["rewrite", "^(.*)$", "/bar"]]],
     ]
 
     assert_config(config, expected)
 
 
 def test_hash_block_map():
-    config = '''
+    config = """
 # http://nginx.org/ru/docs/http/ngx_http_map_module.html
 
 map $http_host $name {
@@ -296,31 +311,39 @@ map $http_user_agent $mobile {
     default       0;
     "~Opera Mini" 1;
 }
-        '''
+        """
 
     expected = [
-        ['http://nginx.org/ru/docs/http/ngx_http_map_module.html'],
-        ['map', ['$http_host', '$name'], [
-            ['hostnames'],
-            ['default', '0'],
-            ['example.com', '1'],
-            ['*.example.com', '1'],
-            ['example.org', '2'],
-            ['*.example.org', '2'],
-            ['.example.net', '3'],
-            ['wap.*', '4'],
-        ]],
-        ['map', ['$http_user_agent', '$mobile'], [
-            ['default', '0'],
-            ['~Opera Mini', '1'],
-        ]]
+        ["http://nginx.org/ru/docs/http/ngx_http_map_module.html"],
+        [
+            "map",
+            ["$http_host", "$name"],
+            [
+                ["hostnames"],
+                ["default", "0"],
+                ["example.com", "1"],
+                ["*.example.com", "1"],
+                ["example.org", "2"],
+                ["*.example.org", "2"],
+                [".example.net", "3"],
+                ["wap.*", "4"],
+            ],
+        ],
+        [
+            "map",
+            ["$http_user_agent", "$mobile"],
+            [
+                ["default", "0"],
+                ["~Opera Mini", "1"],
+            ],
+        ],
     ]
 
     assert_config(config, expected)
 
 
 def test_upstream():
-    config = '''
+    config = """
 # http://nginx.org/ru/docs/http/ngx_http_upstream_module.html
 
 upstream backend {
@@ -337,60 +360,65 @@ server {
         proxy_pass http://backend;
     }
 }
-        '''
+        """
 
     expected = [
-        ['http://nginx.org/ru/docs/http/ngx_http_upstream_module.html'],
-        ['upstream', ['backend'], [
-            ['server', 'backend1.example.com', 'weight=5'],
-            ['server', 'backend2.example.com:8080'],
-            ['server', 'unix:/tmp/backend3'],
-            ['server', 'backup1.example.com:8080', 'backup'],
-            ['server', 'backup2.example.com:8080', 'backup'],
-        ]],
-        ['server', [], [
-            ['location', ['/'], [
-                ['proxy_pass', 'http://backend']
-            ]]
-        ]]]
+        ["http://nginx.org/ru/docs/http/ngx_http_upstream_module.html"],
+        [
+            "upstream",
+            ["backend"],
+            [
+                ["server", "backend1.example.com", "weight=5"],
+                ["server", "backend2.example.com:8080"],
+                ["server", "unix:/tmp/backend3"],
+                ["server", "backup1.example.com:8080", "backup"],
+                ["server", "backup2.example.com:8080", "backup"],
+            ],
+        ],
+        ["server", [], [["location", ["/"], [["proxy_pass", "http://backend"]]]]],
+    ]
 
     assert_config(config, expected)
 
 
 def test_issue_8():
-    config = '''
+    config = r"""
 # http://nginx.org/ru/docs/http/ngx_http_upstream_module.html
 if ($http_referer ~* (\.(ru|ua|by|kz)/(pages/music|partners/|page-no-rights\.xml)) ) {
     set $temp A;
 }
-        '''
+        """
 
     expected = [
-        ['http://nginx.org/ru/docs/http/ngx_http_upstream_module.html'],
-        ['if', ['$http_referer', '~*', '(\.(ru|ua|by|kz)/(pages/music|partners/|page-no-rights\.xml))'], [
-            ['set', '$temp', 'A']
-        ]]
+        ["http://nginx.org/ru/docs/http/ngx_http_upstream_module.html"],
+        [
+            "if",
+            [
+                "$http_referer",
+                "~*",
+                r"(\.(ru|ua|by|kz)/(pages/music|partners/|page-no-rights\.xml))",
+            ],
+            [["set", "$temp", "A"]],
+        ],
     ]
 
     assert_config(config, expected)
 
 
 def test_issue_11():
-    config = '''
+    config = """
 init_by_lua_block {
     tvm = require "nginx.tvm"
 }
-        '''
+        """
 
-    expected = [
-        ['init_by_lua_block', [], ['tvm', '=', 'require', '"nginx.tvm"']]
-    ]
+    expected = [["init_by_lua_block", [], ["tvm", "=", "require", '"nginx.tvm"']]]
 
     assert_config(config, expected)
 
 
 def test_lua_block():
-    config = '''
+    config = """
 # https://github.com/openresty/lua-nginx-module#typical-uses
 location = /lua {
  # MIME type determined by default_type:
@@ -405,28 +433,49 @@ location = /lua {
      end
  }
 }
-        '''
+        """
 
     expected = [
-        ['https://github.com/openresty/lua-nginx-module#typical-uses'],
-        ['location', ['=', '/lua'], [
-            ['MIME type determined by default_type:'],
-            ['default_type', 'text/plain'],
-            ['content_by_lua_block', [], [
-                'local', 'res', '=', 'ngx.location.capture(', '"/some_other_location"', ')',
-                'if', 'res', 'then',
-                    'ngx.say(', '"status: "', ',', 'res.status)',
-                    'ngx.say(', '"body:"', ')',
-                    'ngx.print(res.body)',
-                'end']]
-        ]]
+        ["https://github.com/openresty/lua-nginx-module#typical-uses"],
+        [
+            "location",
+            ["=", "/lua"],
+            [
+                ["MIME type determined by default_type:"],
+                ["default_type", "text/plain"],
+                [
+                    "content_by_lua_block",
+                    [],
+                    [
+                        "local",
+                        "res",
+                        "=",
+                        "ngx.location.capture(",
+                        '"/some_other_location"',
+                        ")",
+                        "if",
+                        "res",
+                        "then",
+                        "ngx.say(",
+                        '"status: "',
+                        ",",
+                        "res.status)",
+                        "ngx.say(",
+                        '"body:"',
+                        ")",
+                        "ngx.print(res.body)",
+                        "end",
+                    ],
+                ],
+            ],
+        ],
     ]
 
     assert_config(config, expected)
 
 
 def test_lua_block_brackets():
-    config = '''
+    config = """
 location = /foo {
  rewrite_by_lua_block {
      res = ngx.location.capture("/memc",
@@ -436,23 +485,40 @@ location = /foo {
 
  proxy_pass http://blah.blah.com;
 }
-        '''
+        """
 
     expected = [
-        ['location', ['=', '/foo'], [
-            ['rewrite_by_lua_block', [], [
-                'res', '=', 'ngx.location.capture(', '"/memc"', ',',
-                    ['args', '=', ['cmd', '=', '"incr"', ',', 'key', '=', 'ngx.var.uri']],
-                ')']],
-            ['proxy_pass', 'http://blah.blah.com']
-        ]]
+        [
+            "location",
+            ["=", "/foo"],
+            [
+                [
+                    "rewrite_by_lua_block",
+                    [],
+                    [
+                        "res",
+                        "=",
+                        "ngx.location.capture(",
+                        '"/memc"',
+                        ",",
+                        [
+                            "args",
+                            "=",
+                            ["cmd", "=", '"incr"', ",", "key", "=", "ngx.var.uri"],
+                        ],
+                        ")",
+                    ],
+                ],
+                ["proxy_pass", "http://blah.blah.com"],
+            ],
+        ]
     ]
 
     assert_config(config, expected)
 
 
 def test_file_delims():
-    config = '''
+    config = """
 # configuration file /etc/nginx/nginx.conf:
 http {
     include sites/*.conf;
@@ -462,22 +528,20 @@ http {
 server {
 
 }
-        '''
+        """
 
     expected = [
-        ['/etc/nginx/nginx.conf'],
-        ['http', [], [
-            ['include', 'sites/*.conf']
-        ]],
-        ['/etc/nginx/sites/default.conf'],
-        ['server', [], []]
+        ["/etc/nginx/nginx.conf"],
+        ["http", [], [["include", "sites/*.conf"]]],
+        ["/etc/nginx/sites/default.conf"],
+        ["server", [], []],
     ]
 
     assert_config(config, expected)
 
 
 def test_comments():
-    config = '''
+    config = """
 # Some comment
 add_header X-Some-Comment some;
 
@@ -493,44 +557,46 @@ if (1) # Comment
 {
     add_header X-Inline blank;
 }
-        '''
+        """
 
     expected = [
-        ['Some comment'],
-        ['add_header', 'X-Some-Comment', 'some'],
-        [''],
-        ['Comment with padding'],
-        [''],
-        ['add_header', 'X-Padding-Comment', 'padding'],
-        [''],
-        ['add_header', 'X-Blank-Comment', 'blank'],
-        ['if', ['1'], [
-            ['add_header', 'X-Inline', 'blank'],
-        ]],
+        ["Some comment"],
+        ["add_header", "X-Some-Comment", "some"],
+        [""],
+        ["Comment with padding"],
+        [""],
+        ["add_header", "X-Padding-Comment", "padding"],
+        [""],
+        ["add_header", "X-Blank-Comment", "blank"],
+        [
+            "if",
+            ["1"],
+            [
+                ["add_header", "X-Inline", "blank"],
+            ],
+        ],
     ]
 
     assert_config(config, expected)
 
 
 def test_upstream_dot():
-    config = '''
+    config = """
 upstream test.mysite.com {
     server 127.0.0.1:9009;
 }
-        '''
+        """
 
     expected = [
-        ['upstream', ['test.mysite.com'], [
-            ['server', '127.0.0.1:9009']
-        ]],
+        ["upstream", ["test.mysite.com"], [["server", "127.0.0.1:9009"]]],
     ]
 
     assert_config(config, expected)
 
 
 def test_empty_config():
-    config = '''
-        '''
+    config = """
+        """
 
     expected = []
 
@@ -538,22 +604,20 @@ def test_empty_config():
 
 
 def test_utfbom_decoding():
-    config = b'''\xef\xbb\xbf
+    config = b"""\xef\xbb\xbf
 add_header X-Test "Windows-1251";
-        '''
+        """
 
-    expected = [
-        ['add_header', 'X-Test', 'Windows-1251']
-    ]
+    expected = [["add_header", "X-Test", "Windows-1251"]]
 
     assert_config(config, expected)
 
 
 def test_national_comment_decoding():
-    config = b'''
+    config = b"""
 # \xeb\xff-\xeb\xff-\xeb\xff = Lya-lya-lya
 add_header X-Test "Windows-1251";
-        '''
+        """
 
     actual = RawParser().parse(config)
     assert_equals(len(actual.asList()), 2)

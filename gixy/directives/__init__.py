@@ -1,4 +1,5 @@
 import os
+
 from gixy.directives.directive import Directive
 
 DIRECTIVES = {}
@@ -7,9 +8,11 @@ DIRECTIVES = {}
 def import_directives():
     files_list = os.listdir(os.path.dirname(__file__))
     for directive_file in files_list:
-        if not directive_file.endswith(".py") or directive_file.startswith('_'):
+        if not directive_file.endswith(".py") or directive_file.startswith("_"):
             continue
-        __import__('gixy.directives.' + os.path.splitext(directive_file)[0], None, None, [''])
+        __import__(
+            "gixy.directives." + os.path.splitext(directive_file)[0], None, None, [""]
+        )
 
 
 def get_all():

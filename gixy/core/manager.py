@@ -1,26 +1,27 @@
-import os
 import logging
+import os
 
 import gixy
-from gixy.core.plugins_manager import PluginsManager
-from gixy.core.context import get_context, pop_context, push_context, purge_context
-from gixy.parser.nginx_parser import NginxParser
 from gixy.core.config import Config
+from gixy.core.context import get_context, pop_context, purge_context, push_context
+from gixy.core.plugins_manager import PluginsManager
+from gixy.parser.nginx_parser import NginxParser
 
 LOG = logging.getLogger(__name__)
 
 
-class Manager(object):
+class Manager:
     def __init__(self, config=None):
         self.root = None
         self.config = config or Config()
         self.auditor = PluginsManager(config=self.config)
 
     def audit(self, file_path, file_data, is_stdin=False):
-        LOG.debug("Audit config file: {fname}".format(fname=file_path))
+        LOG.debug(f"Audit config file: {file_path}")
         parser = NginxParser(
-            cwd=os.path.dirname(file_path) if not is_stdin else '',
-            allow_includes=self.config.allow_includes)
+            cwd=os.path.dirname(file_path) if not is_stdin else "",
+            allow_includes=self.config.allow_includes,
+        )
         self.root = parser.parse(content=file_data.read(), path_info=file_path)
 
         push_context(self.root)

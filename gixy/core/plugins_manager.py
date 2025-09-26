@@ -4,7 +4,7 @@ import gixy
 from gixy.plugins.plugin import Plugin
 
 
-class PluginsManager(object):
+class PluginsManager:
     def __init__(self, config=None):
         self.imported = False
         self.config = config
@@ -14,11 +14,15 @@ class PluginsManager(object):
         if self.imported:
             return
 
-        files_list = os.listdir(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'plugins'))
+        files_list = os.listdir(
+            os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "plugins")
+        )
         for plugin_file in files_list:
-            if not plugin_file.endswith('.py') or plugin_file.startswith('_'):
+            if not plugin_file.endswith(".py") or plugin_file.startswith("_"):
                 continue
-            __import__('gixy.plugins.' + os.path.splitext(plugin_file)[0], None, None, [''])
+            __import__(
+                "gixy.plugins." + os.path.splitext(plugin_file)[0], None, None, [""]
+            )
 
         self.imported = True
 
@@ -36,7 +40,9 @@ class PluginsManager(object):
             if exclude and name in exclude:
                 # Skipped plugins
                 continue
-            if severity and not gixy.severity.is_acceptable(plugin_cls.severity, severity):
+            if severity and not gixy.severity.is_acceptable(
+                plugin_cls.severity, severity
+            ):
                 # Skip plugin by severity level
                 continue
             if self.config and self.config.has_for(name):

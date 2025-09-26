@@ -12,22 +12,28 @@ class add_header_redefinition(Plugin):
             }
         }
     """
+
     summary = 'Nested "add_header" drops parent headers.'
     severity = gixy.severity.MEDIUM
-    description = ('"add_header" replaces ALL parent headers. '
-                   'See documentation: http://nginx.org/en/docs/http/ngx_http_headers_module.html#add_header')
-    help_url = 'https://github.com/yandex/gixy/blob/master/docs/en/plugins/addheaderredefinition.md'
-    directives = ['server', 'location', 'if']
-    options = {'headers': set(['x-frame-options',
-                               'x-content-type-options',
-                               'x-xss-protection',
-                               'content-security-policy',
-                               'cache-control'])
-               }
+    description = (
+        '"add_header" replaces ALL parent headers. '
+        "See documentation: http://nginx.org/en/docs/http/ngx_http_headers_module.html#add_header"
+    )
+    help_url = "https://github.com/yandex/gixy/blob/master/docs/en/plugins/addheaderredefinition.md"
+    directives = ["server", "location", "if"]
+    options = {
+        "headers": {
+            "x-frame-options",
+            "x-content-type-options",
+            "x-xss-protection",
+            "content-security-policy",
+            "cache-control",
+        }
+    }
 
     def __init__(self, config):
-        super(add_header_redefinition, self).__init__(config)
-        self.interesting_headers = self.config.get('headers')
+        super().__init__(config)
+        self.interesting_headers = self.config.get("headers")
 
     def audit(self, directive):
         if not directive.is_block:
@@ -53,15 +59,17 @@ class add_header_redefinition(Plugin):
     def _report_issue(self, current, parent, diff):
         directives = []
         # Add headers from parent level
-        directives.extend(parent.find('add_header'))
+        directives.extend(parent.find("add_header"))
         # Add headers from current level
-        directives.extend(current.find('add_header'))
-        reason = 'Parent headers "{headers}" was dropped in current level'.format(headers='", "'.join(diff))
+        directives.extend(current.find("add_header"))
+        reason = 'Parent headers "{headers}" was dropped in current level'.format(
+            headers='", "'.join(diff)
+        )
         self.add_issue(directive=directives, reason=reason)
 
 
 def get_headers(directive):
-    headers = directive.find('add_header')
+    headers = directive.find("add_header")
     if not headers:
         return set()
 

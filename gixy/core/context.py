@@ -1,5 +1,5 @@
-import logging
 import copy
+import logging
 
 from gixy.core.utils import is_indexed_name
 
@@ -30,44 +30,41 @@ def pop_context():
     return CONTEXTS.pop()
 
 
-class Context(object):
+class Context:
     def __init__(self):
         self.block = None
-        self.variables = {
-            'index': {},
-            'name': {}
-        }
+        self.variables = {"index": {}, "name": {}}
 
     def set_block(self, directive):
         self.block = directive
         return self
 
     def clear_index_vars(self):
-        self.variables['index'] = {}
+        self.variables["index"] = {}
         return self
 
     def add_var(self, name, var):
         if is_indexed_name(name):
-            var_type = 'index'
+            var_type = "index"
             name = int(name)
         else:
-            var_type = 'name'
+            var_type = "name"
 
         self.variables[var_type][name] = var
         return self
 
     def get_var(self, name):
         if is_indexed_name(name):
-            var_type = 'index'
+            var_type = "index"
             name = int(name)
         else:
-            var_type = 'name'
+            var_type = "name"
 
         result = None
         try:
             result = self.variables[var_type][name]
         except KeyError:
-            if var_type == 'name':
+            if var_type == "name":
                 # Only named variables can be builtins
                 import gixy.core.builtin_variables as builtins
 
@@ -75,7 +72,7 @@ class Context(object):
                     result = builtins.builtin_var(name)
 
         if not result:
-            LOG.info("Can't find variable '{0}'".format(name))
+            LOG.info(f"Can't find variable '{name}'")
         return result
 
     def __deepcopy__(self, memo):
@@ -84,7 +81,7 @@ class Context(object):
         memo[id(self)] = result
         result.block = copy.copy(self.block)
         result.variables = {
-            'index': copy.copy(self.variables['index']),
-            'name': copy.copy(self.variables['name'])
+            "index": copy.copy(self.variables["index"]),
+            "name": copy.copy(self.variables["name"]),
         }
         return result

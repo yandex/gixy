@@ -1,23 +1,24 @@
 from nose.tools import assert_equal
-from tests.asserts import assert_is_instance
-from gixy.parser.nginx_parser import NginxParser
-from gixy.directives.directive import *
+
 from gixy.directives.block import *
+from gixy.directives.directive import *
+from gixy.parser.nginx_parser import NginxParser
+from tests.asserts import assert_is_instance
 
 
 def _parse(config):
-    return NginxParser(cwd='', allow_includes=False).parse(config)
+    return NginxParser(cwd="", allow_includes=False).parse(config)
 
 
 def test_directive():
     configs = [
-        'access_log syslog:server=127.0.0.1,tag=nginx_sentry toolsformat;',
-        'user http;',
-        'internal;',
+        "access_log syslog:server=127.0.0.1,tag=nginx_sentry toolsformat;",
+        "user http;",
+        "internal;",
         'set $foo "bar";',
         "set $foo 'bar';",
-        'proxy_pass http://unix:/run/sock.socket;',
-        'rewrite ^/([a-zA-Z0-9]+)$ /$1/${arg_v}.pb break;'
+        "proxy_pass http://unix:/run/sock.socket;",
+        "rewrite ^/([a-zA-Z0-9]+)$ /$1/${arg_v}.pb break;",
     ]
 
     expected = [
@@ -26,7 +27,7 @@ def test_directive():
         [Directive],
         [Directive, SetDirective],
         [Directive],
-        [Directive, RewriteDirective]
+        [Directive, RewriteDirective],
     ]
 
     for i, config in enumerate(configs):
@@ -34,10 +35,7 @@ def test_directive():
 
 
 def test_blocks():
-    configs = [
-        'if (-f /some) {}',
-        'location / {}'
-    ]
+    configs = ["if (-f /some) {}", "location / {}"]
 
     expected = [
         [Directive, Block, IfBlock],
@@ -49,7 +47,7 @@ def test_blocks():
 
 
 def test_dump_simple():
-    config = '''
+    config = """
 # configuration file /etc/nginx/nginx.conf:
 http {
     include sites/*.conf;
@@ -62,7 +60,7 @@ listen 80;
 server {
     include conf.d/listen;
 }
-    '''
+    """
 
     tree = _parse(config)
     assert_is_instance(tree, Directive)
@@ -79,7 +77,7 @@ server {
     include_server = http.children[0]
     assert_is_instance(include_server, Directive)
     assert_is_instance(include_server, IncludeBlock)
-    assert_equal(include_server.file_path, '/etc/nginx/sites/default.conf')
+    assert_equal(include_server.file_path, "/etc/nginx/sites/default.conf")
 
     assert_equal(len(include_server.children), 1)
     server = include_server.children[0]
@@ -91,18 +89,16 @@ server {
     include_listen = server.children[0]
     assert_is_instance(include_listen, Directive)
     assert_is_instance(include_listen, IncludeBlock)
-    assert_equal(include_listen.file_path, '/etc/nginx/conf.d/listen')
+    assert_equal(include_listen.file_path, "/etc/nginx/conf.d/listen")
 
     assert_equal(len(include_listen.children), 1)
     listen = include_listen.children[0]
     assert_is_instance(listen, Directive)
-    assert_equal(listen.args, ['80'])
+    assert_equal(listen.args, ["80"])
 
 
 def test_encoding():
-    configs = [
-        'bar "\xD1\x82\xD0\xB5\xD1\x81\xD1\x82";'
-    ]
+    configs = ['bar "\xD1\x82\xD0\xB5\xD1\x81\xD1\x82";']
 
     for i, config in enumerate(configs):
         _parse(config)
