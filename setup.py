@@ -18,7 +18,6 @@ setup(
     url='https://github.com/yandex/gixy',
     install_requires=[
         'pyparsing>=1.5.5,<3',
-        'cached-property>=1.2.0',
         'argparse>=1.4.0;python_version<"3.2"',
         'six>=1.1.0',
         'Jinja2>=2.8',
@@ -28,6 +27,7 @@ setup(
         'console_scripts': ['gixy=gixy.cli.main:main'],
     },
     test_suite='nose.collector',
+    python_requires='>=3.8',
     packages=find_packages(exclude=['tests', 'tests.*']),
     classifiers=[
         'Development Status :: 3 - Alpha',
