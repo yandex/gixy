@@ -18,7 +18,6 @@ setup(
     url='https://github.com/yandex/gixy',
     install_requires=[
         'pyparsing>=1.5.5,<3',
-        'cached-property>=1.2.0',
         'argparse>=1.4.0;python_version<"3.2"',
         'six>=1.1.0',
         'Jinja2>=2.8',
