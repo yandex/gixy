@@ -9,6 +9,8 @@ import gixy.core.sre_parse.sre_parse as sre_parse
 
 LOG = logging.getLogger(__name__)
 
+MAX_GENERATE = 100
+
 
 def _build_reverse_list(original):
     result = []
@@ -94,10 +96,10 @@ def _gen_combinator(variants, _merge=True):
         producted = itertools.product(*res)
         if _merge:
             # TODO(buglloc): ??!
-            return list(six.moves.map(_merge_variants, producted))
-        return producted
+            return list(six.moves.map(_merge_variants, itertools.islice(producted, MAX_GENERATE)))
+        return itertools.islice(producted, MAX_GENERATE)
     elif _merge:
-        return list(six.moves.map(_merge_variants, [res]))
+        return list(six.moves.map(_merge_variants, itertools.islice([res], MAX_GENERATE)))
     return res
 
 
@@ -971,7 +973,7 @@ class Regexp(object):
         """
 
         context = GenerationContext(char, anchored=anchored, max_repeat=max_repeat)
-        for val in self.root.generate(context=context):
+        for val in itertools.islice(self.root.generate(context=context), MAX_GENERATE):
             if anchored and self.strict and not val.startswith('^'):
                 yield '^' + val
             else:
