@@ -169,7 +169,7 @@ def main():
                                     yoda.audit(full_path, fdata, is_stdin=False)
                         except InvalidConfiguration:
                             failed = True
-                        formatter.feed(full_path, yoda)
+                        formatter.feed(os.path.relpath(full_path, input_path), yoda)
                         failed = failed or sum(yoda.stats.values()) > 0
         else:
             path = os.path.abspath(os.path.expanduser(input_path))
