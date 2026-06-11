@@ -30,6 +30,8 @@ class SarifFormatter(BaseFormatter):
         """Mapping Gixy severity to SARIF"""
         return self.SEVERITY_MAP.get(severity.upper(), 'warning')
 
+
+
     def format_reports(self, reports, stats):
         """
         Formatting reports to SARIF.
@@ -84,6 +86,11 @@ class SarifFormatter(BaseFormatter):
                             'physicalLocation': {
                                 'artifactLocation': {
                                     'uri': path
+                                },
+                                'region': {
+                                    'snippet':{
+                                        'text': issue['config']
+                                    }
                                 }
                             }
                         }
