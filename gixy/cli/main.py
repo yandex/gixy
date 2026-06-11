@@ -153,23 +153,42 @@ def main():
     formatter = formatters()[config.output_format]()
     failed = False
     for input_path in args.nginx_files:
-        path = os.path.abspath(os.path.expanduser(input_path))
-        if not os.path.exists(path):
-            LOG.error('File %s was not found', path)
-            continue
+        if os.path.isdir(input_path):
+            root_dir = input_path
+            for dirpath, dirnames, filenames in os.walk(root_dir):
+                for filename in filenames:
+                    full_path = os.path.join(dirpath, filename)
 
-        with Gixy(config=config) as yoda:
-            try:
-                if path == '-':
-                    with os.fdopen(sys.stdin.fileno(), 'rb') as fdata:
-                        yoda.audit('<stdin>', fdata, is_stdin=True)
-                else:
-                    with open(path, mode='rb') as fdata:
-                        yoda.audit(path, fdata, is_stdin=False)
-            except InvalidConfiguration:
-                failed = True
-            formatter.feed(path, yoda)
-            failed = failed or sum(yoda.stats.values()) > 0
+                    with Gixy(config=config) as yoda:
+                        try:
+                            if full_path == '-':
+                                with os.fdopen(sys.stdin.fileno(), 'rb') as fdata:
+                                    yoda.audit('<stdin>', fdata, is_stdin=True)
+                            else:
+                                with open(full_path, mode='rb') as fdata:
+                                    yoda.audit(full_path, fdata, is_stdin=False)
+                        except InvalidConfiguration:
+                            failed = True
+                        formatter.feed(os.path.relpath(full_path, input_path), yoda)
+                        failed = failed or sum(yoda.stats.values()) > 0
+        else:
+            path = os.path.abspath(os.path.expanduser(input_path))
+            if not os.path.exists(path):
+                LOG.error('File %s was not found', path)
+                continue
+
+            with Gixy(config=config) as yoda:
+                try:
+                    if path == '-':
+                        with os.fdopen(sys.stdin.fileno(), 'rb') as fdata:
+                            yoda.audit('<stdin>', fdata, is_stdin=True)
+                    else:
+                        with open(path, mode='rb') as fdata:
+                            yoda.audit(path, fdata, is_stdin=False)
+                except InvalidConfiguration:
+                    failed = True
+                formatter.feed(path, yoda)
+                failed = failed or sum(yoda.stats.values()) > 0
 
     if args.output_file:
         with open(config.output_file, 'w') as f:
